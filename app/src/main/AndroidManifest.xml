@@ -30,14 +30,23 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <!--AppIntro tutorial, right now this runs everytime, we can change later to run only on
+        first time open github/Appintro-->
+        <activity android:name=".IntroActivity"/>
+
+        <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
