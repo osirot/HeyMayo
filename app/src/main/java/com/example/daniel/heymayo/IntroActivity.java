@@ -1,8 +1,10 @@
 package com.example.daniel.heymayo;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.widget.ImageView;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -10,7 +12,11 @@ import com.github.paolorotolo.appintro.AppIntro;
  * Created by kipta on 10/13/2017.
  */
 
+
 public class IntroActivity extends AppIntro {
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -19,6 +25,7 @@ public class IntroActivity extends AppIntro {
         addSlide(SampleSlide.newInstance(R.layout.slide_2));
         addSlide(SampleSlide.newInstance(R.layout.slide_3));
     }
+
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
