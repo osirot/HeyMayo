@@ -1,5 +1,6 @@
 package com.example.daniel.heymayo;
 
+import android.Manifest;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +25,20 @@ public class IntroActivity extends AppIntro {
         addSlide(SampleSlide.newInstance(R.layout.slide_1));
         addSlide(SampleSlide.newInstance(R.layout.slide_2));
         addSlide(SampleSlide.newInstance(R.layout.slide_3));
+        addSlide(SampleSlide.newInstance(R.layout.slide_4));
+
+        //you can control skip button with this. true or false method
+        showSkipButton(false);
+        //false hides the box outline at bottom for button area
+        showSeparator(false);
+        //false boolean hides page progress bar of dots that would display on bottom
+        showPagerIndicator(false);
+
+
+
+        //you can ask for location permission during slide, turn this off if we choose not too
+        //not working at the moment so i commented it out
+       //askForPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 4);
     }
 
 

@@ -4,36 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/blue_background"
     tools:context="com.example.daniel.heymayo.IntroActivity"
-    android:background="@color/colorPrimaryDark"
-    tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="348dp"
-        android:layout_height="82dp"
-        android:textSize="30sp"
-        android:text="Everyone needs a little bit of help some time"
-        android:textColor="#ffffff"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="350dp"
-        android:layout_height="109dp"
-        android:textSize="30sp"
-        android:text="Helpout or get help from those right around you, and pay it forward"
-        android:textColor="#ffffff"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="342dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginLeft="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp" />
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/redorange_square_radient"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="20dp"
+        android:text="@string/slide2"
+        android:textAlignment="textStart"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="8dp" />
+
+
 
 </android.support.constraint.ConstraintLayout>
