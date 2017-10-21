@@ -1,4 +1,4 @@
-package com.example.daniel.heymayo;
+package com.example.daniel.heymayo.models;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;

@@ -154,7 +154,7 @@ public class SignInActivity extends MainActivity implements View.OnClickListener
 
     // [START basic_write]
     private void writeNewUser(String userId, String name, String email) {
-        com.example.daniel.heymayo.User user = new com.example.daniel.heymayo.User(name, email);
+        com.example.daniel.heymayo.models.User user = new com.example.daniel.heymayo.models.User(name, email);
 
         mDatabase.child("users").child(userId).setValue(user);
     }

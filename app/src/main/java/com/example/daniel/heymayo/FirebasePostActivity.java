@@ -69,7 +69,7 @@ public class FirebasePostActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
-                        com.example.daniel.heymayo.User user = dataSnapshot.getValue(com.example.daniel.heymayo.User.class);
+                        com.example.daniel.heymayo.models.User user = dataSnapshot.getValue(com.example.daniel.heymayo.models.User.class);
 
                         // [START_EXCLUDE]
                         if (user == null) {
@@ -114,7 +114,7 @@ public class FirebasePostActivity extends BaseActivity {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();
-        com.example.daniel.heymayo.Post post = new com.example.daniel.heymayo.Post(body);
+        com.example.daniel.heymayo.models.Post post = new com.example.daniel.heymayo.models.Post(body);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
