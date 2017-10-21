@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">HeyMayo</string>
     <string name="title_activity_maps">Map</string>
+    <string name="action_settings">Settings</string>
+    <string name="slide1">"We all need a little help sometimes in person."</string>
+    <string name="slide2">"Let's bring the world closer together &amp; lend a hand to those beside us."</string>
+    <string name="slide3">"Notification is required to communicate &amp; get your rewards"</string>
+    <string name="slide4">"Lastly we need your location to show &amp; post help quests around you."</string>
+
 </resources>
