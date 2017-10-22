@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.daniel.heymayo.models.Post;
+import com.example.daniel.heymayo.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,7 +75,7 @@ public class FirebasePostActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
-                        com.example.daniel.heymayo.models.User user = dataSnapshot.getValue(com.example.daniel.heymayo.models.User.class);
+                        User user = dataSnapshot.getValue(User.class);
 
                         // [START_EXCLUDE]
                         if (user == null) {
@@ -118,7 +120,7 @@ public class FirebasePostActivity extends BaseActivity {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();
-        com.example.daniel.heymayo.models.Post post = new com.example.daniel.heymayo.models.Post(body);
+        Post post = new Post(body);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();

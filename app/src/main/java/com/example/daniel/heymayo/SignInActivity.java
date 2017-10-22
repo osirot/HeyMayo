@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.daniel.heymayo.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,6 +31,8 @@ public class SignInActivity extends MainActivity implements View.OnClickListener
     private EditText mPasswordField;
     private Button mSignInButton;
     private Button mSignUpButton;
+
+    public String token = getToken();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +157,7 @@ public class SignInActivity extends MainActivity implements View.OnClickListener
 
     // [START basic_write]
     private void writeNewUser(String userId, String name, String email) {
-        com.example.daniel.heymayo.models.User user = new com.example.daniel.heymayo.models.User(name, email);
+        User user = new User(name, email, token);
 
         mDatabase.child("users").child(userId).setValue(user);
     }

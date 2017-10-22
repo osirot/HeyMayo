@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
  * Created by jsayler on 10/15/17.
@@ -31,5 +32,9 @@ public class BaseActivity extends AppCompatActivity {
 
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    public String getToken() {
+        return FirebaseInstanceId.getInstance().getToken();
     }
 }
