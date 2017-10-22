@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@drawable/blue_background"
+    tools:context="com.example.daniel.heymayo.IntroActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/textView4"
+        android:layout_width="342dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/blue_square_radient"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="20dp"
+        android:text="@string/slide1"
+        android:textAlignment="textStart"
         android:textColor="#ffffff"
-        android:textSize="54sp"
-        android:gravity="center"
-        android:text="This is Slide 1"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-        />
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
