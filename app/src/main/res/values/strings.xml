@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">HeyMayo</string>
     <string name="title_activity_maps">Map</string>
+    <string name="button2">Map</string>
+    <string name="button3">Firebase</string>
+    <string name="title_activity_firebase_post">Post to Firebase</string>
 </resources>
