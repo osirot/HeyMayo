@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blue_background"
+    android:background="@drawable/flare"
     tools:context="com.example.daniel.heymayo.IntroActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
@@ -36,21 +36,17 @@
         app:layout_constraintHorizontal_bias="0.458" />
 
     <pl.droidsonroids.gif.GifTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="394dp"
+        android:layout_height="301dp"
         android:background="@drawable/fist_animation_no_loop_sm"
         android:paddingBottom="50dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="15dp"
+        tools:layout_editor_absoluteX="2dp"
+        android:layout_marginBottom="22dp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_marginTop="8dp" />
 
 </android.support.constraint.ConstraintLayout>
