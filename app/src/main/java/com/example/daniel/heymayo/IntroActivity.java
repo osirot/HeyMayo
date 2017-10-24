@@ -48,12 +48,16 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         showPagerIndicator(false);
     }
 
+
+
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
         // Do something when users tap on Skip button.
         finish();
     }
+
+
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
@@ -69,7 +73,11 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
                 != PackageManager.PERMISSION_GRANTED) {
         }
 
+       finish();
+
     }
+
+
     //if permission is granted we switch to MapsActivity, if not toast says Need your location
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -86,12 +94,16 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         }
     }
 
+
+
     @Override
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
         // Do something when the slide changes.
 
     }
+
+
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -103,10 +115,15 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         }
     }
 
+
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(MainActivity.class.getSimpleName(), "Can't connect to Google Play Services!");
     }
+
+
+
 
     @Override
     public void onConnectionSuspended(int i) {
