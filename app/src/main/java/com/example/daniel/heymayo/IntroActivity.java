@@ -2,8 +2,10 @@ package com.example.daniel.heymayo;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -48,16 +50,12 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         showPagerIndicator(false);
     }
 
-
-
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
         // Do something when users tap on Skip button.
         finish();
     }
-
-
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
@@ -73,7 +71,7 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
                 != PackageManager.PERMISSION_GRANTED) {
         }
 
-       finish();
+       //finish();
 
     }
 
@@ -94,16 +92,12 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         }
     }
 
-
-
     @Override
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
         // Do something when the slide changes.
 
     }
-
-
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -115,15 +109,10 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         }
     }
 
-
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(MainActivity.class.getSimpleName(), "Can't connect to Google Play Services!");
     }
-
-
-
 
     @Override
     public void onConnectionSuspended(int i) {
