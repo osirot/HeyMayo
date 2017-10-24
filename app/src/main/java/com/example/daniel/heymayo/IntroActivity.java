@@ -80,7 +80,7 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
         }
-
+        finish();
     }
     //if permission is granted we switch to MapsActivity, if not toast says Need your location
     @Override
