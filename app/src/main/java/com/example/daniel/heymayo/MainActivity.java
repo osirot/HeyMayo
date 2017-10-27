@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 
 /**
  * Created by kipta on 10/14/2017.
@@ -23,7 +26,8 @@ public class MainActivity extends BaseActivity {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //set true boolean is first time app is ran after download
-        boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
+        //boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
+        boolean isFirstStart = mPrefs.getBoolean(getString(R.string.pref_first_start), TRUE);
 
         //isFirstStart run tutorial
         if (isFirstStart){
@@ -31,16 +35,16 @@ public class MainActivity extends BaseActivity {
             startActivity(runTutorial);
 
             SharedPreferences.Editor editor = mPrefs.edit();
-            editor.putBoolean(firstStart, false);
+            editor.putBoolean(getString(R.string.pref_first_start), FALSE);
             editor.apply();
         }
 
         //not first start go to display map with location
-        if(!isFirstStart){
+        //if(!isFirstStart){
             //Intent intent = new Intent(this, MapsActivity.class);
             //startActivity(intent);
 
-        }
+        //}
 
 
 
