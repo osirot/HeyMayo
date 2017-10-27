@@ -41,7 +41,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
-        android:background="@drawable/fist_animation_no_loop_sm"
+        android:background="@drawable/fyeah2"
         android:paddingBottom="50dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -51,6 +51,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginBottom="8dp" />
 
 </android.support.constraint.ConstraintLayout>
