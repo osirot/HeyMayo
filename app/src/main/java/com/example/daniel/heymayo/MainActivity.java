@@ -91,8 +91,6 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
-  
-
 
     public void postActivity(View view) {
         Intent intent = new Intent(this, SignInActivity.class);

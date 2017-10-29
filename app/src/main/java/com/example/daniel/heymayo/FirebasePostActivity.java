@@ -3,6 +3,9 @@ package com.example.daniel.heymayo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -27,22 +30,18 @@ public class FirebasePostActivity extends BaseActivity {
 
     private static final String TAG = "NewPostActivity";
     private static final String REQUIRED = "Required";
-
-    // [START declare_database_ref]
     private DatabaseReference mDatabase;
-    // [END declare_database_ref]
-
     private EditText mBodyField;
     private FloatingActionButton mSubmitButton;
+    private FragmentPagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firebase_post);
 
-        // [START initialize_database_ref]
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        // [END initialize_database_ref]
 
         mBodyField = (EditText) findViewById(R.id.field_body);
         mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post);
@@ -53,57 +52,56 @@ public class FirebasePostActivity extends BaseActivity {
                 submitPost();
             }
         });
+
+        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            private final Fragment[] mFragments = new Fragment[] {
+                    new MyPostsFragment()
+            };
+            @Override
+            public Fragment getItem(int position) {
+                return mFragments[position];
+            }
+            @Override
+            public int getCount() {
+                return mFragments.length;
+            }
+          };
+        mViewPager = findViewById(R.id.viewPager);
+        mViewPager.setAdapter(mPagerAdapter);
     }
 
     private void submitPost() {
         final String body = mBodyField.getText().toString();
-
-        // Body is required
         if (TextUtils.isEmpty(body)) {
             mBodyField.setError(REQUIRED);
             return;
         }
-
-        // Disable button so there are no multi-posts
         setEditingEnabled(false);
         Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-
-        // [START single_value_read]
         final String userId = getUid();
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user value
                         User user = dataSnapshot.getValue(User.class);
-
-                        // [START_EXCLUDE]
                         if (user == null) {
-                            // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
                             Toast.makeText(FirebasePostActivity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            // Write new post
                             writeNewPost(userId, body);
                         }
-
-                        // Finish this Activity, back to the stream
                         setEditingEnabled(true);
                         finish();
-                        // [END_EXCLUDE]
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                        // [START_EXCLUDE]
                         setEditingEnabled(true);
-                        // [END_EXCLUDE]
                     }
                 });
-        // [END single_value_read]
     }
 
     private void setEditingEnabled(boolean enabled) {
@@ -115,12 +113,11 @@ public class FirebasePostActivity extends BaseActivity {
         }
     }
 
-    // [START write_fan_out]
     private void writeNewPost(String userId, String body) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();
-        Post post = new Post(body);
+        Post post = new Post(body, userId);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -129,7 +126,6 @@ public class FirebasePostActivity extends BaseActivity {
 
         mDatabase.updateChildren(childUpdates);
     }
-    // [END write_fan_out]
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
