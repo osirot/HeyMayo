@@ -71,8 +71,6 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
                 != PackageManager.PERMISSION_GRANTED) {
         }
 
-       //finish();
-
     }
 
 
