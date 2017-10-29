@@ -1,7 +1,9 @@
 package com.example.daniel.heymayo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 
 
@@ -15,8 +17,41 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, IntroActivity.class);
-        startActivity(intent);
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //  Initialize SharedPreferences
+                SharedPreferences getPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+
+                //  Create a boolean to check if first start of app
+                boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+                //  If the app has never started before . . .
+                if (isFirstStart) {
+                    final Intent intent = new Intent(MainActivity.this, IntroActivity.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(intent);
+                        }
+                    });
+
+                    //  Make a new preferences editor
+                    SharedPreferences.Editor e = getPrefs.edit();
+
+                    //  Edit preference to make it false because we don't want this to run again
+                    e.putBoolean("firstStart", false);
+
+                    //  Apply changes
+                    e.apply();
+                    //startActivity(intent);
+                }
+
+            }
+        });
+        t.start();
     }
   
     public void mapActivity(View view) {
@@ -28,5 +63,4 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
-
 }
