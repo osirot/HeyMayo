@@ -42,10 +42,9 @@ public class FirebasePostActivity extends BaseActivity {
         setContentView(R.layout.activity_firebase_post);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         mBodyField = (EditText) findViewById(R.id.field_body);
-        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post);
 
+        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post);
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +65,7 @@ public class FirebasePostActivity extends BaseActivity {
                 return mFragments.length;
             }
           };
+
         mViewPager = findViewById(R.id.viewPager);
         mViewPager.setAdapter(mPagerAdapter);
     }
@@ -76,6 +76,7 @@ public class FirebasePostActivity extends BaseActivity {
             mBodyField.setError(REQUIRED);
             return;
         }
+
         setEditingEnabled(false);
         Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
         final String userId = getUid();
@@ -114,16 +115,12 @@ public class FirebasePostActivity extends BaseActivity {
     }
 
     private void writeNewPost(String userId, String body) {
-        // Create new post at /user-posts/$userid/$postid and at
-        // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();
         Post post = new Post(body, userId);
         Map<String, Object> postValues = post.toMap();
-
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, postValues);
         childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
-
         mDatabase.updateChildren(childUpdates);
     }
 

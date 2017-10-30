@@ -20,7 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class SignInActivity extends MainActivity implements View.OnClickListener {
+public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "SignInActivity";
 
@@ -123,7 +123,7 @@ public class SignInActivity extends MainActivity implements View.OnClickListener
         // Write new user
         writeNewUser(user.getUid(), username, user.getEmail());
 
-        // Go to MainActivity
+        // Go to activity
         startActivity(new Intent(SignInActivity.this, FirebasePostActivity.class));
         finish();
     }
