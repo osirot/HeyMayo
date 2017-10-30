@@ -2,7 +2,9 @@ package com.example.daniel.heymayo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+
 import android.media.audiofx.PresetReverb;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -19,6 +21,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -41,11 +44,11 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
 
         }
+
     }
 
     public void postActivity(View view) {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
-
 }
