@@ -53,16 +53,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 postActivity(v);
             }
         });
+
+
+        //connect to google services
+        createGoogleApiClient();
+        createLocationRequest();
     }
 
     public void postActivity(View view) {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
-
-        //connect to google services
-        createGoogleApiClient();
-        createLocationRequest();
-
     }
 
     @Override
@@ -158,8 +158,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected void onStart() {
-        mGoogleApiClient.connect();
         super.onStart();
+        mGoogleApiClient.connect();
+
     }
 
     @Override
