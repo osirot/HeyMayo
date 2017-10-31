@@ -49,6 +49,7 @@ public class FirebasePostActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 submitPost();
+                mBodyField.getText().clear();
             }
         });
 
@@ -80,7 +81,8 @@ public class FirebasePostActivity extends BaseActivity {
         setEditingEnabled(false);
         Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
         final String userId = getUid();
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+        // addValueEventListener continually checks view for changes
+        mDatabase.child("users").child(userId).addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -94,7 +96,8 @@ public class FirebasePostActivity extends BaseActivity {
                             writeNewPost(userId, body);
                         }
                         setEditingEnabled(true);
-                        finish();
+                        // taking out finish() prevents going back to prev activity
+                        //finish();
                     }
 
                     @Override
