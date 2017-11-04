@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "521771439142",
-    "firebase_url": "https://fir-test-66f4d.firebaseio.com",
-    "project_id": "fir-test-66f4d",
-    "storage_bucket": "fir-test-66f4d.appspot.com"
+    "project_number": "1099241464874",
+    "firebase_url": "https://heymayo-test.firebaseio.com",
+    "project_id": "heymayo-test",
+    "storage_bucket": "heymayo-test.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:521771439142:android:eeaa87e23740792a",
+        "mobilesdk_app_id": "1:1099241464874:android:eeaa87e23740792a",
         "android_client_info": {
           "package_name": "com.example.daniel.heymayo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "521771439142-ktpsim171b5pmbibe075cd9fcssbqdkg.apps.googleusercontent.com",
+          "client_id": "1099241464874-1f9n3ieujfu2kohfk5mklqgcl6ql3ato.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.daniel.heymayo",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "521771439142-s2tkjis6ssqshlb0m9h81aidvcq86tml.apps.googleusercontent.com",
+          "client_id": "1099241464874-vc091qgae85q43p3iiids3t3buuduiih.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFAXGM5rfHVdlaIJKRmXHDRPC0lKsO28w"
+          "current_key": "AIzaSyAnv-XEqlFwW6Xk0kca6HyJu47JLiMbO44"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "521771439142-s2tkjis6ssqshlb0m9h81aidvcq86tml.apps.googleusercontent.com",
+              "client_id": "1099241464874-vc091qgae85q43p3iiids3t3buuduiih.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
