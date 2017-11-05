@@ -5,7 +5,7 @@
     <string name="slide1">"We all need a little help sometimes in person."</string>
     <string name="slide2">"Let's bring the world closer together &amp; lend a hand to those beside us."</string>
     <string name="slide3">"Notification is required to communicate &amp; get your rewards"</string>
-    <string name="slide4">"Lastly we need your location to show &amp; post help quests around you."</string>
+    <string name="slide4">"Lastly we need your location to show &amp; request help quests around you."</string>
     <string name="button2">Map</string>
     <string name="button3">Firebase</string>
     <string name="title_activity_firebase_post">Post to Firebase</string>
@@ -15,4 +15,6 @@
     <string name="signed_out">Signed Out</string>
     <string name="desc_firebase_lockup">Firebase logo and name</string>
     <string name="id_fmt">User ID: %s</string>
+    <string name="request">Ask for help!</string>
+    <string name="reply">Offer to help!</string>
 </resources>

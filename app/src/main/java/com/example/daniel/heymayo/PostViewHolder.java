@@ -4,9 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.daniel.heymayo.models.Post;
-
-import org.w3c.dom.Text;
+import com.example.daniel.heymayo.models.Request;
 
 public class PostViewHolder extends RecyclerView.ViewHolder {
 
@@ -24,10 +22,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         bodyView = itemView.findViewById(R.id.post_body);
     }
 
-    public void bindToPost(Post post) {
-        //titleView.setText(post.title);
-        //authorView.setText(post.author);
-        userId.setText(post.uid);
-        bodyView.setText(post.body);
+    public void bindToPost(Request request) {
+        //titleView.setText(request.title);
+        //authorView.setText(request.author);
+        userId.setText(request.uid);
+        bodyView.setText(request.body);
     }
 }

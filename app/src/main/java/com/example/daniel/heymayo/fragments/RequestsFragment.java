@@ -1,12 +1,11 @@
-package com.example.daniel.heymayo;
-
+package com.example.daniel.heymayo.fragments;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
-public class MyPostsFragment extends PostListFragment {
+public class RequestsFragment extends PostListFragment {
 
-    public MyPostsFragment() {}
+    public RequestsFragment() {}
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {

@@ -1,5 +1,6 @@
-package com.example.daniel.heymayo;
+package com.example.daniel.heymayo.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.daniel.heymayo.models.Post;
+import com.example.daniel.heymayo.PostViewHolder;
+import com.example.daniel.heymayo.R;
+import com.example.daniel.heymayo.ReplyPostActivity;
+import com.example.daniel.heymayo.models.Request;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -21,7 +24,7 @@ public abstract class PostListFragment extends Fragment {
     private static final String TAG = "PostListFragment";
 
     private DatabaseReference mDatabase;
-    private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
+    private FirebaseRecyclerAdapter<Request, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
@@ -31,7 +34,7 @@ public abstract class PostListFragment extends Fragment {
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_all_posts, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_all_requests, container, false);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -54,18 +57,32 @@ public abstract class PostListFragment extends Fragment {
         // Set up FirebaseRecyclerAdapter with the Query
         Query postsQuery = getQuery(mDatabase);
 
-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post.class).build();
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Request>().setQuery(postsQuery, Request.class).build();
 
-        mAdapter = new FirebaseRecyclerAdapter<Post, PostViewHolder>(options) {
+        mAdapter = new FirebaseRecyclerAdapter<Request, PostViewHolder>(options) {
             @Override
             public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                return new PostViewHolder(inflater.inflate(R.layout.item_post, viewGroup, false));
+                return new PostViewHolder(inflater.inflate(R.layout.item_request, viewGroup, false));
             }
 
             @Override
-            protected void onBindViewHolder(PostViewHolder viewHolder, int position, final Post model) {
+            protected void onBindViewHolder(PostViewHolder viewHolder, int position, final Request model) {
                 viewHolder.bindToPost(model);
+
+                final DatabaseReference postRef = getRef(position);
+
+                // Set click listener to view replies for a request
+                final String postKey = postRef.getKey();
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Launch PostDetailActivity
+                        Intent intent = new Intent(getActivity(), ReplyPostActivity.class);
+                        intent.putExtra(ReplyPostActivity.EXTRA_POST_KEY, postKey);
+                        startActivity(intent);
+                    }
+                });
             }
         };
 
