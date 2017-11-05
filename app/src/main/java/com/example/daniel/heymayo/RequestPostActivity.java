@@ -14,7 +14,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.daniel.heymayo.models.Post;
+import com.example.daniel.heymayo.fragments.RequestsFragment;
+import com.example.daniel.heymayo.models.Request;
 import com.example.daniel.heymayo.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FirebasePostActivity extends BaseActivity {
+public class RequestPostActivity extends BaseActivity {
 
     private static final String TAG = "NewPostActivity";
     private static final String REQUIRED = "Required";
@@ -36,15 +37,16 @@ public class FirebasePostActivity extends BaseActivity {
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_firebase_post);
+        setContentView(R.layout.activity_view_requests);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mBodyField = (EditText) findViewById(R.id.field_body);
 
-        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post);
+        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_request);
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +57,7 @@ public class FirebasePostActivity extends BaseActivity {
 
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             private final Fragment[] mFragments = new Fragment[] {
-                    new MyPostsFragment()
+                    new RequestsFragment()
             };
             @Override
             public Fragment getItem(int position) {
@@ -89,7 +91,7 @@ public class FirebasePostActivity extends BaseActivity {
                         User user = dataSnapshot.getValue(User.class);
                         if (user == null) {
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(FirebasePostActivity.this,
+                            Toast.makeText(RequestPostActivity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
@@ -119,8 +121,8 @@ public class FirebasePostActivity extends BaseActivity {
 
     private void writeNewPost(String userId, String body) {
         String key = mDatabase.child("posts").push().getKey();
-        Post post = new Post(body, userId);
-        Map<String, Object> postValues = post.toMap();
+        Request request = new Request(body, userId);
+        Map<String, Object> postValues = request.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, postValues);
         childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
