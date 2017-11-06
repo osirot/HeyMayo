@@ -9,6 +9,6 @@ public class RepliesFragment extends PostListFragment {
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
-        return null;
+        return databaseReference.child("requests");
     }
 }

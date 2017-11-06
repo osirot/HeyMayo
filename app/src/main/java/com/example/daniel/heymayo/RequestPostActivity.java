@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class RequestPostActivity extends BaseActivity {
 
-    private static final String TAG = "NewPostActivity";
+    private static final String TAG = "RequestPostActivity";
     private static final String REQUIRED = "Required";
     private DatabaseReference mDatabase;
     private EditText mBodyField;
@@ -95,11 +95,9 @@ public class RequestPostActivity extends BaseActivity {
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            writeNewPost(userId, body);
+                            writeNewRequest(userId, body);
                         }
                         setEditingEnabled(true);
-                        // taking out finish() prevents going back to prev activity
-                        //finish();
                     }
 
                     @Override
@@ -119,13 +117,13 @@ public class RequestPostActivity extends BaseActivity {
         }
     }
 
-    private void writeNewPost(String userId, String body) {
-        String key = mDatabase.child("posts").push().getKey();
+    private void writeNewRequest(String userId, String body) {
+        String key = mDatabase.child("requests").push().getKey();
         Request request = new Request(body, userId);
         Map<String, Object> postValues = request.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/posts/" + key, postValues);
-        childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
+        childUpdates.put("/requests/" + key, postValues);
+        childUpdates.put("/user-posts/" + userId + "/requests/" + key, postValues);
         mDatabase.updateChildren(childUpdates);
     }
 

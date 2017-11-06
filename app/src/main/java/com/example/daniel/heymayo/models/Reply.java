@@ -14,11 +14,8 @@ import java.util.Map;
 public class Reply {
 
     public String uid;
-    public String author;
-    public String title;
     public String body;
-    //public int karmaCount = 0;
-    //public Map<String, Boolean> karmaPoints = new HashMap<>();
+
 
     public Reply() {}
 
@@ -31,10 +28,8 @@ public class Reply {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
-        //result.put("author", author);
         result.put("body", body);
-        //result.put("starCount", starCount);
-        //result.put("stars", stars);
+        result.put("timestamp", ServerValue.TIMESTAMP);
 
         return result;
     }

@@ -9,7 +9,6 @@ public class RequestsFragment extends PostListFragment {
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
-        return databaseReference.child("posts");
-                //.child(getUid());
+        return databaseReference.child("requests");
     }
 }

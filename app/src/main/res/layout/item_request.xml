@@ -26,7 +26,6 @@
             android:layout_marginTop="10dp"
             android:id="@+id/include" />
 
-
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

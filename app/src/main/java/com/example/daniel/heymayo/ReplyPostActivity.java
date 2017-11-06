@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.daniel.heymayo.models.User;
 import com.example.daniel.heymayo.models.Reply;
@@ -37,17 +40,20 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
 
     public static final String EXTRA_POST_KEY = "post_key";
 
-    private DatabaseReference mPostReference;
+    private static final String REQUIRED = "Required";
+
+    private DatabaseReference mRequestReference;
     private DatabaseReference mReplyReference;
     private ValueEventListener mPostListener;
     private String mPostKey;
     private ReplyAdapter mAdapter;
 
-    private TextView mAuthorView;
     private TextView mBodyView;
     private EditText mReplyField;
     private Button mReplyButton;
     private RecyclerView mReplyRecycler;
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +67,11 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
         }
 
         // Initialize Database
-        mPostReference = FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey);
-        mReplyReference = FirebaseDatabase.getInstance().getReference().child("post-replies").child(mPostKey);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mRequestReference = mDatabase.child("requests").child(mPostKey);
+        mReplyReference = mDatabase.child("replies").child(mPostKey);
 
         // Initialize Views
-        mAuthorView = findViewById(R.id.post_author);
         mBodyView = findViewById(R.id.post_body);
         mReplyField = findViewById(R.id.field_reply_text);
         mReplyButton = findViewById(R.id.button_post_reply);
@@ -94,13 +100,11 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // [START_EXCLUDE]
                 Toast.makeText(ReplyPostActivity.this, "Failed to load post.",
                         Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
             }
         };
-        mPostReference.addValueEventListener(postListener);
+        mRequestReference.addValueEventListener(postListener);
 
         // Keep copy of post listener so we can remove it when app stops
         mPostListener = postListener;
@@ -116,7 +120,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
 
         // Remove post value event listener
         if (mPostListener != null) {
-            mPostReference.removeEventListener(mPostListener);
+            mRequestReference.removeEventListener(mPostListener);
         }
 
         // Clean up reply listener
@@ -132,31 +136,67 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void postReply() {
-        final String uid = getUid();
-        FirebaseDatabase.getInstance().getReference().child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get user information
-                User user = dataSnapshot.getValue(User.class);
-                String authorName = user.uid;
+        final String body = mReplyField.getText().toString();
+        if (TextUtils.isEmpty(body)) {
+            mReplyField.setError(REQUIRED);
+            return;
+        }
 
-                // Create new reply object
-                String ReplyText = mReplyField.getText().toString();
-                Reply reply = new Reply(uid, ReplyText);
+        setEditingEnabled(false);
 
-                // Push the reply, it will appear in the list
-                mReplyReference.push().setValue(reply);
+        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
 
-                // Clear the field
-                mReplyField.setText(null);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        final String userId = getUid();
 
-            }
-        });
+        // addValueEventListener continually checks view for changes
+        mDatabase.child("users").child(userId).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if (user == null) {
+                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Toast.makeText(ReplyPostActivity.this,
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            writeNewRequest(userId, body);
+                            mReplyField.setText(null);
+                        }
+                        setEditingEnabled(true);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                        setEditingEnabled(true);
+                    }
+                });
     }
 
+    private void setEditingEnabled(boolean enabled) {
+        mReplyField.setEnabled(enabled);
+        if (enabled) {
+            mReplyButton.setVisibility(View.VISIBLE);
+        } else {
+            mReplyButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void writeNewRequest(String userId, String body) {
+        String key = mReplyReference.push().getKey();
+        Reply reply = new Reply(userId, body);
+        Map<String, Object> postValues = reply.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/replies/" + mPostKey + "/" + key, postValues);
+        childUpdates.put("/user-posts/" + userId + "/replies/" + mPostKey + "/" + key, postValues);
+        FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+    }
+
+//---------------
+
+
+    //custom view holder static class
     private static class ReplyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView authorView;
@@ -169,6 +209,9 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+//--------------
+
+    //custom adapter static class
     private static class ReplyAdapter extends RecyclerView.Adapter<ReplyViewHolder> {
 
         private Context mContext;
@@ -220,33 +263,12 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
 
-                    // A reply has changed, use the key to determine if we are displaying this
-                    // reply and if so remove it.
-                    String replyKey = dataSnapshot.getKey();
-
-                    int replyIndex = mReplyIds.indexOf(replyKey);
-                    if (replyIndex > -1) {
-                        // Remove data from the list
-                        mReplyIds.remove(replyIndex);
-                        mReplies.remove(replyIndex);
-
-                        // Update the RecyclerView
-                        notifyItemRemoved(replyIndex);
-                    } else {
-                        Log.w(TAG, "onChildRemoved:unknown_child:" + replyKey);
-                    }
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
 
-                    // A reply has changed position, use the key to determine if we are
-                    // displaying this reply and if so move it.
-                    Reply movedReply = dataSnapshot.getValue(Reply.class);
-                    String replyKey = dataSnapshot.getKey();
                 }
 
                 @Override
@@ -272,7 +294,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onBindViewHolder(ReplyViewHolder holder, int position) {
             Reply reply = mReplies.get(position);
-            holder.authorView.setText(reply.author);
+            holder.authorView.setText(reply.uid);
             holder.bodyView.setText(reply.body);
         }
 
@@ -286,6 +308,5 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
                 mDatabaseReference.removeEventListener(mChildEventListener);
             }
         }
-
     }
 }
