@@ -47,8 +47,8 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void onAuthSuccess() {
-        startActivity(new Intent(SignInActivity.this, FirebasePostActivity.class));
-        Log.d(TAG, "Auth successful, starting FirebasePostActivity");
+        startActivity(new Intent(SignInActivity.this, RequestPostActivity.class));
+        Log.d(TAG, "Auth successful, starting RequestPostActivity");
         finish();
     }
 

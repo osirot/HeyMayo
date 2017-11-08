@@ -7,15 +7,19 @@ import com.google.firebase.database.ServerValue;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by jsayler on 11/5/17.
+ */
 @IgnoreExtraProperties
-public class Post {
+public class Reply {
 
     public String uid;
     public String body;
 
-    public Post() {}
 
-    public Post(String body, String uid) {
+    public Reply() {}
+
+    public Reply(String uid, String body) {
         this.uid = uid;
         this.body = body;
     }
@@ -30,4 +34,3 @@ public class Post {
         return result;
     }
 }
-

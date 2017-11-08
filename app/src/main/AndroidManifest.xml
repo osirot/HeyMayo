@@ -37,11 +37,18 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".FirebasePostActivity"
+            android:name=".RequestPostActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ReplyPostActivity"
+            android:parentActivityName=".RequestPostActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".RequestPostActivity" />
         </activity>
         <activity android:name=".SignInActivity" />
     </application>

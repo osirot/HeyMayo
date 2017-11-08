@@ -12,12 +12,12 @@
 
         <include
             android:id="@+id/post_author_layout"
-            layout="@layout/include_post_author"
+            layout="@layout/include_request_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true" />
 
-        <include layout="@layout/include_post_text"
+        <include layout="@layout/include_request_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -25,7 +25,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:id="@+id/include" />
-
 
     </RelativeLayout>
 
