@@ -3,11 +3,7 @@ package com.example.daniel.heymayo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.models.User;
@@ -19,157 +15,71 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+public class SignInActivity extends BaseActivity {
 
-public class SignInActivity extends MainActivity implements View.OnClickListener {
+    private static final String TAG = "AnonymousAuth";
 
-    private static final String TAG = "SignInActivity";
-
-    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-
-    private EditText mEmailField;
-    private EditText mPasswordField;
-    private Button mSignInButton;
-    private Button mSignUpButton;
-
-    public String token = getToken();
+    private DatabaseReference mDatabase;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
-        // Views
-        mEmailField = (EditText) findViewById(R.id.field_email);
-        mPasswordField = (EditText) findViewById(R.id.field_password);
-        mSignInButton = (Button) findViewById(R.id.button_sign_in);
-        mSignUpButton = (Button) findViewById(R.id.button_sign_up);
-
-        // Click listeners
-        mSignInButton.setOnClickListener(this);
-        mSignUpButton.setOnClickListener(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // Check auth on Activity start
-        if (mAuth.getCurrentUser() != null) {
-            onAuthSuccess(mAuth.getCurrentUser());
+        if (user != null) {
+            // signed in, moving on to next activity
+            onAuthSuccess();
+            Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
+        } else {
+            // new sign in, creating anonymous account
+            signInAnonymously();
+            Log.d(TAG, "onAuthStateChanged:not signed in; calling signInAnonymously()");
         }
     }
 
-    private void signIn() {
-        Log.d(TAG, "signIn");
-        if (!validateForm()) {
-            return;
-        }
-
-        showProgressDialog();
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
-                        hideProgressDialog();
-
-                        if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
-                        } else {
-                            Toast.makeText(SignInActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void signUp() {
-        Log.d(TAG, "signUp");
-        if (!validateForm()) {
-            return;
-        }
-
-        showProgressDialog();
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
-                        hideProgressDialog();
-
-                        if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
-                        } else {
-                            Toast.makeText(SignInActivity.this, "Sign Up Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-
-        // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail());
-
-        // Go to MainActivity
-        startActivity(new Intent(SignInActivity.this, FirebasePostActivity.class));
+    private void onAuthSuccess() {
+        startActivity(new Intent(SignInActivity.this, RequestPostActivity.class));
+        Log.d(TAG, "Auth successful, starting RequestPostActivity");
         finish();
     }
 
-    private String usernameFromEmail(String email) {
-        if (email.contains("@")) {
-            return email.split("@")[0];
-        } else {
-            return email;
-        }
+    private void signInAnonymously() {
+        showProgressDialog();
+        mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInAnonymously:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    writeNewUser(user.getUid(), getToken());
+                    onAuthSuccess();
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInAnonymously:failure", task.getException());
+                    Toast.makeText(SignInActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                }
+                hideProgressDialog();
+            }
+        });
     }
 
-    private boolean validateForm() {
-        boolean result = true;
-        if (TextUtils.isEmpty(mEmailField.getText().toString())) {
-            mEmailField.setError("Required");
-            result = false;
-        } else {
-            mEmailField.setError(null);
-        }
-
-        if (TextUtils.isEmpty(mPasswordField.getText().toString())) {
-            mPasswordField.setError("Required");
-            result = false;
-        } else {
-            mPasswordField.setError(null);
-        }
-
-        return result;
+    private void signOut() {
+        mAuth.signOut();
     }
 
-    // [START basic_write]
-    private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email, token);
-
+    private void writeNewUser(String userId, String token) {
+        User user = new User(userId, token);
         mDatabase.child("users").child(userId).setValue(user);
-    }
-    // [END basic_write]
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.button_sign_in) {
-            signIn();
-        } else if (i == R.id.button_sign_up) {
-            signUp();
-        }
+        Log.d(TAG, "Saving user ID " + userId + " to database");
     }
 }

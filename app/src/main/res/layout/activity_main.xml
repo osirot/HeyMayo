@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.daniel.heymayo.FirebasePostActivity">
+        tools:context="com.example.daniel.heymayo.MainActivity">
 
         <Button
             android:id="@+id/button2"
@@ -15,25 +15,25 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="32dp"
-            android:text="Maps"
+            android:text="@string/button2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:onClick="mapActivity" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="250dp"
-        android:layout_height="62dp"
-        android:layout_alignStart="@+id/button2"
-        android:layout_below="@+id/button2"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="16dp"
-        android:onClick="postActivity"
-        android:text="Firebase"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="250dp"
+            android:layout_height="62dp"
+            android:layout_alignStart="@+id/button2"
+            android:layout_below="@+id/button2"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            android:onClick="postActivity"
+            android:text="@string/button3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button2" />
 
-    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,18 +1,40 @@
 package com.example.daniel.heymayo;
 
+
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+
+import android.location.Location;
+import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
+
+    private FloatingActionButton firebaseButton;
+
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private Location mLastLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +44,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
+
+        firebaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postActivity(v);
+            }
+        });
+
+
+        //connect to google services
+        createGoogleApiClient();
+        createLocationRequest();
     }
 
+    public void postActivity(View view) {
+        Intent intent = new Intent(this, SignInActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint){
+        try {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            updateUI();
+        } catch (SecurityException e){
+            Log.e("Exception: %s", e.getMessage());
+        }
+
+    }
 
     /**
      * Manipulates the map once available.
@@ -37,11 +88,91 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        try {
+            mMap.setMyLocationEnabled(true);
+        }catch (SecurityException e){
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
 
-        // Add a marker at North Seattle College
-        LatLng northSeattleCollege = new LatLng(47.699187, -122.333423);
-        mMap.addMarker(new MarkerOptions().position(northSeattleCollege).title("Marker at NSC"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(northSeattleCollege));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(16));
+    public void updateUI() {
+        if (mLastLocation == null){
+            startLocationUpdates();
+        } else{
+            LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.setMinZoomPreference(20);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        }
+    }
+
+    protected void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        showToast("Connection failed.");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (i == CAUSE_SERVICE_DISCONNECTED) {
+            showToast("Disconnected. Please re-connect.");
+        } else if (i == CAUSE_NETWORK_LOST) {
+            showToast("Network lost. Please re-connect.");
+        }
+    }
+
+    // Create an instance of GoogleAPIClient.
+    protected synchronized void createGoogleApiClient() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        updateUI();
+    }
+
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 }

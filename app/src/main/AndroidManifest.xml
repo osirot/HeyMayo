@@ -19,7 +19,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,19 +37,20 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".FirebasePostActivity"
+            android:name=".RequestPostActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".SignInActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".ReplyPostActivity"
+            android:parentActivityName=".RequestPostActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".RequestPostActivity" />
         </activity>
+        <activity android:name=".SignInActivity" />
     </application>
 
 </manifest>
