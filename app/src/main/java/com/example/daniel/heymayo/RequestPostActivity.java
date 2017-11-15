@@ -28,8 +28,8 @@ public class RequestPostActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private EditText mBodyField;
     private FloatingActionButton mSubmitButton;
-    private FragmentPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
+    //private FragmentPagerAdapter mPagerAdapter;
+    //private ViewPager mViewPager;
 
 
     @Override
