@@ -30,7 +30,7 @@ public class MainActivity extends BaseActivity {
 
         //set true boolean is first time app is ran after download
         //boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
-        boolean isFirstStart = mPrefs.getBoolean(getString(R.string.pref_first_start), TRUE);
+        boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
 
         //isFirstStart run tutorial
         if (isFirstStart) {
@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity {
             startActivity(runTutorial);
 
             SharedPreferences.Editor editor = mPrefs.edit();
-            editor.putBoolean(getString(R.string.pref_first_start), FALSE);
+            editor.putBoolean(firstStart, false);
             editor.apply();
         }
 
