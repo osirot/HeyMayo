@@ -29,8 +29,8 @@ public class MainActivity extends BaseActivity {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //set true boolean is first time app is ran after download
-        //boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
-        boolean isFirstStart = mPrefs.getBoolean(getString(R.string.pref_first_start), TRUE);
+        boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
+        //boolean isFirstStart = mPrefs.getBoolean(getString(R.string.pref_first_start), TRUE);
 
         //isFirstStart run tutorial
         if (isFirstStart) {
@@ -47,8 +47,6 @@ public class MainActivity extends BaseActivity {
         if (!isFirstStart) {
             Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
-
-
         }
 
     }
