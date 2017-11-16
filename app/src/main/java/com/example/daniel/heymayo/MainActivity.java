@@ -27,7 +27,6 @@ public class MainActivity extends BaseActivity {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //set true boolean is first time app is ran after download
-
         boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
 
         //isFirstStart run tutorial
