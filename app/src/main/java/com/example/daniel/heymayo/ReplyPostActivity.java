@@ -6,7 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,7 +49,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
     private ValueEventListener mPostListener;
     private String mPostKey;
     private ReplyAdapter mAdapter;
-
+    private TextView mAuthorView;
     private TextView mBodyView;
     private EditText mReplyField;
     private Button mReplyButton;
@@ -72,6 +74,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
         mReplyReference = mDatabase.child("replies").child(mPostKey);
 
         // Initialize Views
+        mAuthorView = findViewById(R.id.post_author);
         mBodyView = findViewById(R.id.post_body);
         mReplyField = findViewById(R.id.field_reply_text);
         mReplyButton = findViewById(R.id.button_post_reply);
@@ -80,6 +83,21 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
         mReplyButton.setOnClickListener(this);
         mReplyRecycler.setLayoutManager(new LinearLayoutManager(this));
 
+        // creates a listener attached to recyclerView that activates when an element in the
+        // recyclerView is touched or long touched
+        mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this,
+                mReplyRecycler, new ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
+                //Toast.makeText(ReplyPostActivity.this, "Single press on position: " + position, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onLongClick(View view, int position) {
+                Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
+                //Toast.makeText(ReplyPostActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     @Override
@@ -92,7 +110,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 Request post = dataSnapshot.getValue(Request.class);
-                //mAuthorView.setText(post.author);
+                mAuthorView.setText(post.uid);
                 mBodyView.setText(post.body);
             }
 
@@ -195,7 +213,6 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
 
 //---------------
 
-
     //custom view holder static class
     private static class ReplyViewHolder extends RecyclerView.ViewHolder {
 
@@ -207,12 +224,38 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             authorView = itemView.findViewById(R.id.reply_author);
             bodyView = itemView.findViewById(R.id.reply_body);
         }
+
+        public void bind(Reply reply) {
+            authorView.setText(reply.uid);
+            bodyView.setText(reply.body);
+        }
+    }
+
+    //custom view holder static class
+    private static class RequestViewHolder extends RecyclerView.ViewHolder {
+
+        //public TextView authorView;
+        public TextView bodyView;
+
+        public RequestViewHolder(View itemView) {
+            super(itemView);
+            //authorView = itemView.findViewById(R.id.requestor_reply_author);
+            bodyView = itemView.findViewById(R.id.requestor_reply_body);
+        }
+
+        public void bind(Reply reply) {
+            //authorView.setText(reply.uid);
+            bodyView.setText(reply.body);
+        }
     }
 
 //--------------
 
-    //custom adapter static class
-    private static class ReplyAdapter extends RecyclerView.Adapter<ReplyViewHolder> {
+    //custom adapter class
+    private class ReplyAdapter extends RecyclerView.Adapter {
+
+        private static final int VIEW_TYPE_MESSAGE_SENT = 1;
+        private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
         private Context mContext;
         private DatabaseReference mDatabaseReference;
@@ -260,17 +303,10 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
                         Log.w(TAG, "onChildChanged:unknown_child:" + replyKey);
                     }
                 }
-
                 @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
+                public void onChildRemoved(DataSnapshot dataSnapshot) {}
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-
-                }
-
+                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {}
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.w(TAG, "postReplies:onCancelled", databaseError.toException());
@@ -279,23 +315,40 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
                 }
             };
             ref.addChildEventListener(childEventListener);
-
             // Store reference to listener so it can be removed on app stop
             mChildEventListener = childEventListener;
         }
 
         @Override
-        public ReplyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            View view;
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            View view = inflater.inflate(R.layout.item_reply, parent, false);
-            return new ReplyViewHolder(view);
+            // uses viewType to determine if this was sent by you or someone else and
+            // redirects to the correct view holder
+            if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+                view = inflater.inflate(R.layout.item_reply_requestor, parent, false);
+                return new RequestViewHolder(view);
+            } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+                view = inflater.inflate(R.layout.item_reply, parent, false);
+                return new ReplyViewHolder(view);
+            }
+            return null;
         }
 
         @Override
-        public void onBindViewHolder(ReplyViewHolder holder, int position) {
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Reply reply = mReplies.get(position);
-            holder.authorView.setText(reply.uid);
-            holder.bodyView.setText(reply.body);
+            switch (holder.getItemViewType()) {
+                case VIEW_TYPE_MESSAGE_SENT:
+                    ((RequestViewHolder) holder).bind(reply);
+                    //Log.d("viewHolder:", "you");
+                    break;
+                case VIEW_TYPE_MESSAGE_RECEIVED:
+                    ((ReplyViewHolder) holder).bind(reply);
+                    //Log.d("viewHolder:", "not you");
+                    break;
+            }
         }
 
         @Override
@@ -303,10 +356,67 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             return mReplies.size();
         }
 
+        @Override
+        public int getItemViewType(int position) {
+            Reply reply = mReplies.get(position);
+            String userID = getUid();
+            // checks if message is from your or someone else
+            if (reply.uid.equals(userID)) {
+                return VIEW_TYPE_MESSAGE_SENT;
+            } else {
+                return VIEW_TYPE_MESSAGE_RECEIVED;
+            }
+        }
+
         public void cleanupListener() {
             if (mChildEventListener != null) {
                 mDatabaseReference.removeEventListener(mChildEventListener);
             }
         }
+    }
+
+//-------
+
+    // click listener interface
+    private interface ClickListener {
+        void onClick(View view, int position);
+        void onLongClick(View view, int position);
+    }
+
+    // touch listener inner class for processing touch events
+    private class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private ClickListener clicklistener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(Context context, final RecyclerView recycleView, final ClickListener clicklistener){
+            this.clicklistener=clicklistener;
+            gestureDetector=new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recycleView.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clicklistener != null){
+                        clicklistener.onLongClick(child, recycleView.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)){
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+                //return true;
+            }
+            return false;
+        }
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {}
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
     }
 }
