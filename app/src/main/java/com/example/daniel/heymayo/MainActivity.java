@@ -40,12 +40,10 @@ public class MainActivity extends BaseActivity {
         }
 
         //not first start go to display map with location
-
         if (!isFirstStart) {
             Intent intent = new Intent(this, SignInActivity.class);//MapsActivity.class);
             startActivity(intent);
         }
-
     }
 
     // deprecated, do not use (except for testing)
