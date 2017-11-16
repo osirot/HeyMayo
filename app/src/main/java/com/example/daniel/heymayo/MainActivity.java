@@ -45,24 +45,21 @@ public class MainActivity extends BaseActivity {
         //not first start go to display map with location
 
         if (!isFirstStart) {
-            Intent intent = new Intent(this, MapsActivity.class);
+            Intent intent = new Intent(this, SignInActivity.class);//MapsActivity.class);
             startActivity(intent);
-
-
         }
 
     }
 
+    // deprecated, do not use (except for testing)
 
-    public void mapActivity(View view) {
+    //public void mapActivity(View view) {
+    //    Intent intent = new Intent(this, MapsActivity.class);
+    //    startActivity(intent);
+    //}
 
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
-    }
-
-
-    public void postActivity(View view) {
-        Intent intent = new Intent(this, SignInActivity.class);
-        startActivity(intent);
-    }
+    //public void postActivity(View view) {
+    //    Intent intent = new Intent(this, SignInActivity.class);
+    //    startActivity(intent);
+    //}
 }

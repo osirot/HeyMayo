@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public abstract class PostListFragment extends Fragment {
+public class PostListFragment extends Fragment {
 
     private static final String TAG = "PostListFragment";
 
@@ -41,6 +43,10 @@ public abstract class PostListFragment extends Fragment {
         mRecycler = rootView.findViewById(R.id.messages_list);
         mRecycler.setHasFixedSize(true);
 
+        // forces recyclerview to move 1 page or element at a time instead of free scrolling thru it all
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRecycler);
+
         return rootView;
     }
 
@@ -49,8 +55,8 @@ public abstract class PostListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Set up Layout Manager, reverse layout
-        mManager = new LinearLayoutManager(getActivity());
-        mManager.setReverseLayout(true);
+        mManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, true);
+        //mManager.setReverseLayout(true);
         mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
 
@@ -122,6 +128,8 @@ public abstract class PostListFragment extends Fragment {
         }
     }
 
-    public abstract Query getQuery(DatabaseReference databaseReference);
+    public Query getQuery(DatabaseReference databaseReference) {
+        return databaseReference.child("requests");
+    }
 
 }
