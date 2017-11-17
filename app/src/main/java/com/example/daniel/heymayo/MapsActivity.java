@@ -3,14 +3,19 @@ package com.example.daniel.heymayo;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.fragments.PostListFragment;
+import com.example.daniel.heymayo.models.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -21,20 +26,28 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    // variables for map
     private GoogleMap mMap;
-
-    //private FloatingActionButton firebaseButton;
-
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
 
+
+    //variables for carousel
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
+    private FloatingActionButton FABcreateNewPost;
+    private FloatingActionButton FABsubmitPost;
+    private EditText mBodyField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +57,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // will reuse the button code later
-        //firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
-        //firebaseButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View v) {
-        //        postActivity(v);
-        //    }
-        //});
-
         //connect to google services
         createGoogleApiClient();
         createLocationRequest();
+
+
+        ///////////carousel on create stuff below here /////////////
 
         //loads PostListFragment into viewPager on maps activity view
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -69,7 +76,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mViewPager = findViewById(R.id.viewPager);
         // this sets the above adapter to the view pager
         mViewPager.setAdapter(mPagerAdapter);
-    }
+
+        //instantiate FAB buttons
+        FABcreateNewPost = (FloatingActionButton) findViewById(R.id.fab_post);
+        FABsubmitPost = (FloatingActionButton) findViewById(R.id.fab_submit_request);
+
+        FABcreateNewPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.getParent();
+                EditText newHelpRequest = (EditText) findViewById(R.id.new_Post);
+                // make createNewPost FAb invisible
+                FABcreateNewPost.setVisibility(View.INVISIBLE);
+                //when button is clicked make edit text and submitFAb visible
+                newHelpRequest.setVisibility(View.VISIBLE);
+                FABsubmitPost.setVisibility(View.VISIBLE);
+
+                //after submit is pressed make edit text invisible,
+                // also make other fab button invisible
+                // and FAB reappear by setting visible
+
+            }
+        });
+
+        ////////////end carousel on create stuff here
+
+    }//end on create
 
     // deprecated; called in MainActivity
     //public void postActivity(View view) {
@@ -187,4 +219,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mGoogleApiClient.disconnect();
         }
     }
+
+    /////////////carousel code here //////////////
+
+
+
+    ///////////end carousel code here/////////////
 }

@@ -1,15 +1,16 @@
-<RelativeLayout
-    android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <fragment
-        android:id="@+id/map"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         tools:context=".MapsActivity" />
 
     <android.support.v4.view.ViewPager
@@ -19,8 +20,53 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginEnd="16dp"/>
 
-    </android.support.v4.view.ViewPager>
+    <!-- this is used to create a new post-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="20dp"
+        android:clickable="true"
+        android:src="@drawable/appicon57x57"
+        app:backgroundTint="@color/mayoLogo"
+        app:fabSize="normal"
+        android:focusable="true" />
+
+
+    <EditText
+        android:id="@+id/new_Post"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="8dp"
+        android:layout_margin="10dp"
+        android:paddingLeft="25dp"
+        android:hint="@string/request"
+        android:inputType="textMultiLine"
+        android:maxLines="5"
+        android:background="@drawable/blue_square_radient"
+        android:visibility="invisible"
+        />
+
+    <!-- this is used to submit a new post. it is set to invisible until fab_post is clicked-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:layout_alignEnd="@id/new_Post"
+        android:layout_margin="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_navigation_check_24"
+        android:visibility="invisible"
+        />
+
+
+
+
 
 </RelativeLayout>
