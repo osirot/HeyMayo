@@ -112,9 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             startLocationUpdates();
         } else{
             LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            mMap.setMinZoomPreference(1);
+            mMap.setMinZoomPreference(20);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-            mMap.getUiSettings();
         }
     }
 
@@ -173,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
     }
 
     @Override

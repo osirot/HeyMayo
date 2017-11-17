@@ -24,9 +24,13 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //set true boolean is first time app is ran after download
+
+        //boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
         boolean isFirstStart = mPrefs.getBoolean(firstStart, true);
 
         //isFirstStart run tutorial
@@ -40,10 +44,12 @@ public class MainActivity extends BaseActivity {
         }
 
         //not first start go to display map with location
+
         if (!isFirstStart) {
             Intent intent = new Intent(this, SignInActivity.class);//MapsActivity.class);
             startActivity(intent);
         }
+
     }
 
     // deprecated, do not use (except for testing)
