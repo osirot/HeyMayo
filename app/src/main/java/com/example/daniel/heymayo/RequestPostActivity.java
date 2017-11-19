@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.models.Request;
+import com.example.daniel.heymayo.models.Time;
 import com.example.daniel.heymayo.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -70,7 +71,7 @@ public class RequestPostActivity extends MainActivity {
     private void submitPost() {
         final String body = mBodyField.getText().toString();
         final String userId = getUid();
-        final long timestamp = getUnixTime();
+        final long timestamp = Time.getUnixTime();
         if (TextUtils.isEmpty(body)) {
             mBodyField.setError(REQUIRED);
             return;
@@ -127,9 +128,6 @@ public class RequestPostActivity extends MainActivity {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private long getUnixTime() {
-        return System.currentTimeMillis();
-    }
 
     //deprecated - not needed (no menu bar)
 /*

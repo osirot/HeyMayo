@@ -14,18 +14,13 @@ import android.widget.TextView;
 
 import com.example.daniel.heymayo.R;
 import com.example.daniel.heymayo.ReplyActivity;
-import com.example.daniel.heymayo.models.Reply;
 import com.example.daniel.heymayo.models.Request;
+import com.example.daniel.heymayo.models.Time;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class RequestFragment extends Fragment {
 
@@ -35,6 +30,7 @@ public class RequestFragment extends Fragment {
     private FirebaseRecyclerAdapter<Request, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
+
 
     public RequestFragment() {}
 
@@ -135,16 +131,6 @@ public class RequestFragment extends Fragment {
         return databaseReference.child("requests");
     }
 
-    public static String formatDateTime(Request request) {
-        Calendar cal = Calendar.getInstance();
-        TimeZone tz = cal.getTimeZone();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
-        sdf.setTimeZone(tz);
-        Date date = new Date(request.timestamp);
-        String localtime = sdf.format(date);
-        return localtime;
-    }
-
     private class PostViewHolder extends RecyclerView.ViewHolder {
 
         //public TextView titleView;
@@ -168,7 +154,7 @@ public class RequestFragment extends Fragment {
             //authorView.setText(request.author);
             //userId.setText(request.uid);
             bodyView.setText(request.body);
-            timeStamp.setText(formatDateTime(request));
+            timeStamp.setText(Time.formatDateTime(request.timestamp));
         }
     }
 

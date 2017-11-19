@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.fragments.RequestFragment;
+import com.example.daniel.heymayo.models.Time;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -121,7 +122,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 Request post = dataSnapshot.getValue(Request.class);
                 //mAuthorView.setText(post.uid);
                 mBodyView.setText(post.body);
-                mTimeStamp.setText(RequestFragment.formatDateTime(post));
+                mTimeStamp.setText(Time.formatDateTime(post.timestamp));
             }
 
             @Override
@@ -166,7 +167,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private void postReply() {
         final String body = mReplyField.getText().toString();
         final String userId = getUid();
-        final long timestamp = getUnixTime();
+        final long timestamp = Time.getUnixTime();
 
         if (TextUtils.isEmpty(body)) {
             mReplyField.setError(REQUIRED);
@@ -227,20 +228,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private long getUnixTime() {
-        return System.currentTimeMillis();
-    }
-
-    private static String formatDateTime(Reply reply) {
-        Calendar cal = Calendar.getInstance();
-        TimeZone tz = cal.getTimeZone();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
-        sdf.setTimeZone(tz);
-        Date date = new Date(reply.timestamp);
-        String localtime = sdf.format(date);
-        return localtime;
-    }
-
 //---------------
 
     //custom view holder static class
@@ -249,7 +236,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         //public TextView authorView;
         public TextView bodyView;
         public TextView timeStamp;
-
 
         public ReplyViewHolder(View itemView) {
             super(itemView);
@@ -261,7 +247,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         public void bind(Reply reply) {
             //authorView.setText(reply.uid);
             bodyView.setText(reply.body);
-            timeStamp.setText(formatDateTime(reply));
+            timeStamp.setText(Time.formatDateTime(reply.timestamp));
         }
     }
 
@@ -282,7 +268,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         public void bind(Reply reply) {
             //authorView.setText(reply.uid);
             bodyView.setText(reply.body);
-            timeStamp.setText(formatDateTime(reply));
+            timeStamp.setText(Time.formatDateTime(reply.timestamp));
         }
     }
 
