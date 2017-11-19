@@ -2,16 +2,24 @@ package com.example.daniel.heymayo;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.graphics.Color;
 
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -22,19 +30,32 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.*;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
-
     private FloatingActionButton firebaseButton;
-
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-
+    private static final String TAG = "MapsActivity";
+    //for geoFire
+    private LatLng myLocation;
+    private Circle searchCircle;
+    private GeoQuery geoQuery;
+    private GeoFire geoFire;
+    private Map<String,Marker> markers;
+    private static final String GEO_FIRE_DB = "https://heymayo-test.firebaseio.com/";
+    private static final String GEO_FIRE_REF = GEO_FIRE_DB + "locations";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +75,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
         //connect to google services
         createGoogleApiClient();
         createLocationRequest();
+
     }
 
     public void postActivity(View view) {
@@ -99,9 +120,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mLastLocation == null){
             startLocationUpdates();
         } else{
-            LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             mMap.setMinZoomPreference(15);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+            this.searchCircle = this.mMap.addCircle(new CircleOptions().center(myLocation).radius(200));
+            this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
+            this.searchCircle.setStrokeColor(Color.argb(66, 0, 0, 0));
+
+            this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_REF));
+
+            GeoLocation INITIAL_CENTER = new GeoLocation(myLocation.latitude, myLocation.longitude);
+            this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER, 1);
+            this.markers = new HashMap<String, Marker>();
+            Log.e(TAG, "Value: " + markers);
+
+            //For saving current Lat + Long into pref as strings
+            SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = locationPrefs.edit();
+            String currentLat = Double.toString(myLocation.latitude);
+            String currentLong = Double.toString(myLocation.longitude);
+            editor.putString("Latitude", currentLat);
+            editor.putString("Longitude", currentLong);
+            editor.apply();
         }
     }
 
@@ -169,6 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
     }
+
     protected void onStop() {
         super.onStop();
         if (mGoogleApiClient.isConnected()) {

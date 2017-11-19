@@ -37,6 +37,7 @@ public class SignInActivity extends BaseActivity {
         super.onStart();
         if (user != null) {
             // signed in, moving on to next activity
+            writeNewUser(user.getUid(), getToken());
             onAuthSuccess();
             Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
         } else {
