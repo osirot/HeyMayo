@@ -12,12 +12,14 @@ public class Request {
 
     public String uid;
     public String body;
+    public long timestamp;
 
     public Request() {}
 
-    public Request(String body, String uid) {
+    public Request(String body, String uid, long timestamp) {
         this.uid = uid;
         this.body = body;
+        this.timestamp = timestamp;
     }
 
     @Exclude
@@ -25,7 +27,7 @@ public class Request {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("body", body);
-        result.put("timestamp", ServerValue.TIMESTAMP);
+        result.put("timestamp", timestamp);
 
         return result;
     }

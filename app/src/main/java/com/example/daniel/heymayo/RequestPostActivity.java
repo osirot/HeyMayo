@@ -69,6 +69,8 @@ public class RequestPostActivity extends MainActivity {
 
     private void submitPost() {
         final String body = mBodyField.getText().toString();
+        final String userId = getUid();
+        final long timestamp = getUnixTime();
         if (TextUtils.isEmpty(body)) {
             mBodyField.setError(REQUIRED);
             return;
@@ -76,7 +78,7 @@ public class RequestPostActivity extends MainActivity {
 
         setEditingEnabled(false);
         Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-        final String userId = getUid();
+
         // addValueEventListener continually checks view for changes
         mDatabase.child("users").child(userId).addValueEventListener(
                 new ValueEventListener() {
@@ -89,7 +91,7 @@ public class RequestPostActivity extends MainActivity {
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            writeNewRequest(userId, body);
+                            writeNewRequest(userId, body, timestamp);
                         }
                         setEditingEnabled(true);
                     }
@@ -111,9 +113,9 @@ public class RequestPostActivity extends MainActivity {
         }
     }
 
-    private void writeNewRequest(String userId, String body) {
+    private void writeNewRequest(String userId, String body, Long timestamp) {
         String key = mDatabase.child("requests").push().getKey();
-        Request request = new Request(body, userId);
+        Request request = new Request(body, userId, timestamp);
         Map<String, Object> postValues = request.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/requests/" + key, postValues);
@@ -123,6 +125,10 @@ public class RequestPostActivity extends MainActivity {
 
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    private long getUnixTime() {
+        return System.currentTimeMillis();
     }
 
     //deprecated - not needed (no menu bar)

@@ -14,12 +14,18 @@ import android.widget.TextView;
 
 import com.example.daniel.heymayo.R;
 import com.example.daniel.heymayo.ReplyActivity;
+import com.example.daniel.heymayo.models.Reply;
 import com.example.daniel.heymayo.models.Request;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class RequestFragment extends Fragment {
 
@@ -97,14 +103,11 @@ public class RequestFragment extends Fragment {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
                 int friendlyMessageCount = mAdapter.getItemCount();
-                int lastVisiblePosition =
-                        mManager.findLastCompletelyVisibleItemPosition();
+                int lastVisiblePosition = mManager.findLastCompletelyVisibleItemPosition();
                 // If the recycler view is initially being loaded or the
                 // user is at the bottom of the list, scroll to the bottom
                 // of the list to show the newly added message.
-                if (lastVisiblePosition == -1 ||
-                        (positionStart >= (friendlyMessageCount - 1) &&
-                                lastVisiblePosition == (positionStart - 1))) {
+                if (lastVisiblePosition == -1 || (positionStart >= (friendlyMessageCount - 1) && lastVisiblePosition == (positionStart - 1))) {
                     mManager.scrollToPosition(positionStart);
                 }
             }
@@ -132,27 +135,40 @@ public class RequestFragment extends Fragment {
         return databaseReference.child("requests");
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder {
+    public static String formatDateTime(Request request) {
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        sdf.setTimeZone(tz);
+        Date date = new Date(request.timestamp);
+        String localtime = sdf.format(date);
+        return localtime;
+    }
+
+    private class PostViewHolder extends RecyclerView.ViewHolder {
 
         //public TextView titleView;
         //public TextView authorView;
-        public TextView userId;
+        //public TextView userId;
         public TextView bodyView;
+        public TextView timeStamp;
 
         public PostViewHolder(View itemView) {
             super(itemView);
 
             //titleView = itemView.findViewById(R.id.post_title);
             //authorView = itemView.findViewById(R.id.post_author);
-            userId = itemView.findViewById(R.id.post_author);
+            //userId = itemView.findViewById(R.id.post_author);
             bodyView = itemView.findViewById(R.id.post_body);
+            timeStamp = itemView.findViewById(R.id.post_time);
         }
 
         public void bindToPost(Request request) {
             //titleView.setText(request.title);
             //authorView.setText(request.author);
-            userId.setText(request.uid);
+            //userId.setText(request.uid);
             bodyView.setText(request.body);
+            timeStamp.setText(formatDateTime(request));
         }
     }
 

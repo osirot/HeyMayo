@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.daniel.heymayo.fragments.RequestFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,10 +26,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.example.daniel.heymayo.models.User;
 import com.example.daniel.heymayo.models.Reply;
@@ -51,8 +56,9 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private ValueEventListener mPostListener;
     private String mPostKey;
     private ReplyAdapter mAdapter;
-    private TextView mAuthorView;
+    //private TextView mAuthorView;
     private TextView mBodyView;
+    private TextView mTimeStamp;
     private EditText mReplyField;
     private Button mReplyButton;
     private RecyclerView mReplyRecycler;
@@ -76,8 +82,10 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         mReplyReference = mDatabase.child("replies").child(mPostKey);
 
         // Initialize Views
-        mAuthorView = findViewById(R.id.post_author);
+        //mAuthorView = findViewById(R.id.post_author);
         mBodyView = findViewById(R.id.post_body);
+        mTimeStamp = findViewById(R.id.post_time);
+        mTimeStamp = findViewById(R.id.post_time);
         mReplyField = findViewById(R.id.field_reply_text);
         mReplyButton = findViewById(R.id.button_post_reply);
         mReplyRecycler = findViewById(R.id.recycler_replies);
@@ -87,8 +95,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         // creates a listener attached to recyclerView that activates when an element in the
         // recyclerView is touched or long touched
-        mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this,
-                mReplyRecycler, new ClickListener() {
+        mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, mReplyRecycler, new ClickListener() {
             @Override
             public void onClick(View view, final int position) {
                 Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
@@ -112,8 +119,9 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 Request post = dataSnapshot.getValue(Request.class);
-                mAuthorView.setText(post.uid);
+                //mAuthorView.setText(post.uid);
                 mBodyView.setText(post.body);
+                mTimeStamp.setText(RequestFragment.formatDateTime(post));
             }
 
             @Override
@@ -157,6 +165,9 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
     private void postReply() {
         final String body = mReplyField.getText().toString();
+        final String userId = getUid();
+        final long timestamp = getUnixTime();
+
         if (TextUtils.isEmpty(body)) {
             mReplyField.setError(REQUIRED);
             return;
@@ -164,9 +175,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         setEditingEnabled(false);
 
-        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-
-        final String userId = getUid();
+        //Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
 
         // addValueEventListener continually checks view for changes
         mDatabase.child("users").child(userId).addValueEventListener(
@@ -180,7 +189,8 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            writeNewRequest(userId, body);
+
+                            writeNewRequest(userId, body, timestamp);
                             mReplyField.setText(null);
                         }
                         setEditingEnabled(true);
@@ -203,9 +213,9 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void writeNewRequest(String userId, String body) {
+    private void writeNewRequest(String userId, String body, long unixTime) {
         String key = mReplyReference.push().getKey();
-        Reply reply = new Reply(userId, body);
+        Reply reply = new Reply(userId, body, unixTime);
         Map<String, Object> postValues = reply.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/replies/" + mPostKey + "/" + key, postValues);
@@ -213,8 +223,22 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }
 
-    public String getUid() {
+    private String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    private long getUnixTime() {
+        return System.currentTimeMillis();
+    }
+
+    private static String formatDateTime(Reply reply) {
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        sdf.setTimeZone(tz);
+        Date date = new Date(reply.timestamp);
+        String localtime = sdf.format(date);
+        return localtime;
     }
 
 //---------------
@@ -222,18 +246,22 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     //custom view holder static class
     private static class ReplyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView authorView;
+        //public TextView authorView;
         public TextView bodyView;
+        public TextView timeStamp;
+
 
         public ReplyViewHolder(View itemView) {
             super(itemView);
-            authorView = itemView.findViewById(R.id.reply_author);
+            //authorView = itemView.findViewById(R.id.reply_author);
             bodyView = itemView.findViewById(R.id.reply_body);
+            timeStamp = itemView.findViewById(R.id.reply_time);
         }
 
         public void bind(Reply reply) {
-            authorView.setText(reply.uid);
+            //authorView.setText(reply.uid);
             bodyView.setText(reply.body);
+            timeStamp.setText(formatDateTime(reply));
         }
     }
 
@@ -242,16 +270,19 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         //public TextView authorView;
         public TextView bodyView;
+        public TextView timeStamp;
 
         public RequestViewHolder(View itemView) {
             super(itemView);
             //authorView = itemView.findViewById(R.id.requestor_reply_author);
             bodyView = itemView.findViewById(R.id.requestor_reply_body);
+            timeStamp = itemView.findViewById(R.id.requestor_reply_time);
         }
 
         public void bind(Reply reply) {
             //authorView.setText(reply.uid);
             bodyView.setText(reply.body);
+            timeStamp.setText(formatDateTime(reply));
         }
     }
 
@@ -269,6 +300,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         private List<String> mReplyIds = new ArrayList<>();
         private List<Reply> mReplies = new ArrayList<>();
+        private List<String> mTimeStamps = new ArrayList<>();
 
         public ReplyAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
@@ -279,12 +311,13 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-
+                    //Log.d(TAG, "TestOutput:" + mReplyReference.child(dataSnapshot.getKey()).child("timestamp"));
                     // A new reply has been added, add it to the displayed list
                     Reply reply = dataSnapshot.getValue(Reply.class);
 
                     // Update RecyclerView
                     mReplyIds.add(dataSnapshot.getKey());
+                    //Log.d(TAG,"TESTOUTPUT:" + dataSnapshot.getKey());
                     mReplies.add(reply);
                     notifyItemInserted(mReplies.size() - 1);
                 }
@@ -299,6 +332,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                     String replyKey = dataSnapshot.getKey();
 
                     int ReplyIndex = mReplyIds.indexOf(replyKey);
+                    //Log.d(TAG,"TESTOUTPUT:" + ReplyIndex);
                     if (ReplyIndex > -1) {
                         // Replace with the new data
                         mReplies.set(ReplyIndex, newReply);

@@ -19,13 +19,24 @@
             android:id="@+id/top_bar">
 
             <TextView
-                android:id="@+id/reply_author"
+                android:id="@+id/You"
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:gravity="center|start"
                 android:layout_weight="10"
                 android:textStyle="bold"
-                tools:text="John Doe" />
+                android:text="You"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/reply_time"
+                android:text="11/19/2017 12:36:00 AM"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:gravity="center|start"
+                android:layout_weight="10"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/star_outline"

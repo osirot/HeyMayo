@@ -15,13 +15,15 @@ public class Reply {
 
     public String uid;
     public String body;
+    public long timestamp;
 
 
     public Reply() {}
 
-    public Reply(String uid, String body) {
+    public Reply(String uid, String body, long timestamp) {
         this.uid = uid;
         this.body = body;
+        this.timestamp = timestamp;
     }
 
     @Exclude
@@ -29,7 +31,7 @@ public class Reply {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("body", body);
-        result.put("timestamp", ServerValue.TIMESTAMP);
+        result.put("timestamp", timestamp);
 
         return result;
     }

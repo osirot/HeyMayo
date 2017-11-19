@@ -28,6 +28,16 @@
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
+            <TextView
+                android:id="@+id/requestor_reply_time"
+                android:text="11/19/2017 12:36:00 AM"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:gravity="center|start"
+                android:layout_weight="10"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
             <ImageView
                 android:id="@+id/star_outline"
                 android:layout_width="24dp"
