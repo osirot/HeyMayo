@@ -84,7 +84,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //connect to google services
         createGoogleApiClient();
         createLocationRequest();
-    }
 
         //loads PostListFragment into viewPager on maps activity view
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
