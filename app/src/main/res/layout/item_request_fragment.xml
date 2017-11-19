@@ -15,11 +15,11 @@
 
         <include
             android:id="@+id/post_author_layout"
-            layout="@layout/include_request_author"
+            layout="@layout/include_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <include layout="@layout/include_request_text"
+        <include layout="@layout/include_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_author_layout"

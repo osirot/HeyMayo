@@ -7,6 +7,7 @@ import android.media.audiofx.PresetReverb;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import static java.lang.Boolean.FALSE;
@@ -17,7 +18,7 @@ import static java.lang.Boolean.TRUE;
  * Created by kipta on 10/14/2017.
  */
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
     final String firstStart = "firstStart";
 
     @Override

@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.daniel.heymayo.fragments.PostListFragment;
+import com.example.daniel.heymayo.fragments.RequestFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -57,9 +57,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createGoogleApiClient();
         createLocationRequest();
 
-        //loads PostListFragment into viewPager on maps activity view
+        //loads RequestFragment into viewPager on maps activity view
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            private final Fragment[] mFragments = new Fragment[] { new PostListFragment() };
+            private final Fragment[] mFragments = new Fragment[] { new RequestFragment() };
             @Override
             public Fragment getItem(int position) { return mFragments[position]; }
             @Override

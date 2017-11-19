@@ -2,6 +2,7 @@ package com.example.daniel.heymayo;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,9 +38,9 @@ import com.example.daniel.heymayo.models.Request;
  * Created by jsayler on 11/5/17.
  */
 
-public class ReplyPostActivity extends BaseActivity implements View.OnClickListener {
+public class ReplyActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "ReplyPostActivity";
+    private static final String TAG = "ReplyActivity";
 
     public static final String EXTRA_POST_KEY = "post_key";
 
@@ -60,7 +62,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request_details);
+        setContentView(R.layout.activity_reply);
 
         // Get post key from intent
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
@@ -90,12 +92,12 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View view, final int position) {
                 Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
-                //Toast.makeText(ReplyPostActivity.this, "Single press on position: " + position, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ReplyActivity.this, "Single press on position: " + position, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onLongClick(View view, int position) {
                 Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
-                //Toast.makeText(ReplyPostActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ReplyActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
             }
         }));
     }
@@ -118,7 +120,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                Toast.makeText(ReplyPostActivity.this, "Failed to load post.",
+                Toast.makeText(ReplyActivity.this, "Failed to load post.",
                         Toast.LENGTH_SHORT).show();
             }
         };
@@ -174,7 +176,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
                         User user = dataSnapshot.getValue(User.class);
                         if (user == null) {
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(ReplyPostActivity.this,
+                            Toast.makeText(ReplyActivity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
@@ -209,6 +211,10 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
         childUpdates.put("/replies/" + mPostKey + "/" + key, postValues);
         childUpdates.put("/user-posts/" + userId + "/replies/" + mPostKey + "/" + key, postValues);
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+    }
+
+    public String getUid() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 //---------------
@@ -327,10 +333,10 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
             // uses viewType to determine if this was sent by you or someone else and
             // redirects to the correct view holder
             if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-                view = inflater.inflate(R.layout.item_reply_requestor, parent, false);
+                view = inflater.inflate(R.layout.item_reply_user, parent, false);
                 return new RequestViewHolder(view);
             } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
-                view = inflater.inflate(R.layout.item_reply, parent, false);
+                view = inflater.inflate(R.layout.item_reply_others, parent, false);
                 return new ReplyViewHolder(view);
             }
             return null;

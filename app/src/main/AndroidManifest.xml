@@ -44,7 +44,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".ReplyPostActivity"
+            android:name=".ReplyActivity"
             android:parentActivityName=".RequestPostActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
