@@ -57,6 +57,7 @@ public class ReplyPostActivity extends BaseActivity implements View.OnClickListe
 
     private DatabaseReference mDatabase;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
