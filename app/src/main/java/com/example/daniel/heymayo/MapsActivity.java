@@ -25,6 +25,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.app.AlertDialog;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, GeoQueryEventListener {
 
     private GoogleMap mMap;
     private FloatingActionButton firebaseButton;
@@ -56,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Map<String,Marker> markers;
     private static final String GEO_FIRE_DB = "https://heymayo-test.firebaseio.com/";
     private static final String GEO_FIRE_REF = GEO_FIRE_DB + "locations";
+    private static final GeoLocation INITIAL_CENTER = new GeoLocation(47.681437, -122.263981);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +84,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //connect to google services
         createGoogleApiClient();
         createLocationRequest();
+
+        this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_REF));
+        this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER, .2);
+        this.markers = new HashMap<String, Marker>();
+        //Log.e(TAG, "Value: " + markers);
 
     }
 
@@ -127,13 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
             this.searchCircle.setStrokeColor(Color.argb(66, 0, 0, 0));
 
-            this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_REF));
-
-            GeoLocation INITIAL_CENTER = new GeoLocation(myLocation.latitude, myLocation.longitude);
-            this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER, 1);
-            this.markers = new HashMap<String, Marker>();
             Log.e(TAG, "Value: " + markers);
-
             //For saving current Lat + Long into pref as strings
             SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = locationPrefs.edit();
@@ -197,10 +202,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         updateUI();
     }
 
+    @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
 
+        this.geoQuery.addGeoQueryEventListener(this);
     }
 
     @Override
@@ -215,5 +222,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+
+        this.geoQuery.removeAllListeners();
+        for (Marker marker: this.markers.values()) {
+            marker.remove();
+        }
+        this.markers.clear();
+    }
+
+    @Override
+    public void onKeyEntered(String key, GeoLocation location) {
+        // Add a new marker to the map
+        Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)));
+        this.markers.put(key, marker);
+    }
+
+    @Override
+    public void onKeyExited(String key) {
+        // Remove any old marker
+        Marker marker = this.markers.get(key);
+        if (marker != null) {
+            marker.remove();
+            this.markers.remove(key);
+        }
+    }
+
+    @Override
+    public void onKeyMoved(String key, GeoLocation location) {
+        // Move the marker
+        Marker marker = this.markers.get(key);
+        if (marker != null) {
+            this.animateMarkerTo(marker, location.latitude, location.longitude);
+        }
+    }
+
+    @Override
+    public void onGeoQueryError(DatabaseError error) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("There was an unexpected error querying GeoFire: " + error.getMessage())
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+    }
+
+    // Animation handler for old APIs without animation support
+    private void animateMarkerTo(final Marker marker, final double lat, final double lng) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long DURATION_MS = 3000;
+        final Interpolator interpolator = new AccelerateDecelerateInterpolator();
+        final LatLng startPosition = marker.getPosition();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                float elapsed = SystemClock.uptimeMillis() - start;
+                float t = elapsed/DURATION_MS;
+                float v = interpolator.getInterpolation(t);
+
+                double currentLat = (lat - startPosition.latitude) * v + startPosition.latitude;
+                double currentLng = (lng - startPosition.longitude) * v + startPosition.longitude;
+                marker.setPosition(new LatLng(currentLat, currentLng));
+
+                // if animation is not finished yet, repeat
+                if (t < 1) {
+                    handler.postDelayed(this, 16);
+                }
+            }
+        });
     }
 }

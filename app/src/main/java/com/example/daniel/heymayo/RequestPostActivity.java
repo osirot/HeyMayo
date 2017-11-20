@@ -49,7 +49,7 @@ public class RequestPostActivity extends BaseActivity {
     private ViewPager mViewPager;
     private GeoFire geoFire;
     private static final String GEO_FIRE_DB = "https://heymayo-test.firebaseio.com/";
-    //private static final String GEO_FIRE_REF = GEO_FIRE_DB + "/_geofire";
+    private static final String GEO_FIRE_REF = GEO_FIRE_DB + "locations";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
