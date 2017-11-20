@@ -1,5 +1,7 @@
 package com.example.daniel.heymayo.models;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.TimeZone;
  * POJO to generate and format unix timestamps
  */
 
+@IgnoreExtraProperties
 public class Time {
 
     public void Time() {}

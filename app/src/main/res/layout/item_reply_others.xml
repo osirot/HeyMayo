@@ -38,14 +38,26 @@
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
-            <ImageView
-                android:id="@+id/star_outline"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_horizontal|end"
-                android:src="@drawable/ic_toggle_star_outline_24"
-                android:contentDescription="star outline"
-                tools:ignore="HardcodedText" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/star_filled"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_toggle_star_24"
+                    android:contentDescription="star"
+                    tools:ignore="HardcodedText"
+                    android:visibility="invisible"/>
+                <ImageView
+                    android:id="@+id/star_outline"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_toggle_star_outline_24"
+                    android:contentDescription="star outline"
+                    tools:ignore="HardcodedText"/>
+
+            </FrameLayout>
 
         </LinearLayout>
 

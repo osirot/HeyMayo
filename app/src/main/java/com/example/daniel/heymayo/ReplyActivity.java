@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.fragments.RequestFragment;
+import com.example.daniel.heymayo.models.Karma;
 import com.example.daniel.heymayo.models.Time;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -25,6 +27,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -99,12 +103,21 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, mReplyRecycler, new ClickListener() {
             @Override
             public void onClick(View view, final int position) {
-                Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
+                ImageView star_outline = view.findViewById(R.id.star_outline);
+                //star_outline.setOnClickListener(new View.OnClickListener() {
+                //    @Override
+                //    public void onClick(View v) {
+                //
+                        //Toast.makeText(ReplyActivity.this, "Single Click on Image at position " + position, Toast.LENGTH_SHORT).show();
+                //        Karma.logPost("this is a test message");
+                //    }
+                //});
+                //Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
                 //Toast.makeText(ReplyActivity.this, "Single press on position: " + position, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onLongClick(View view, int position) {
-                Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
+                //Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
                 //Toast.makeText(ReplyActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
             }
         }));
@@ -286,7 +299,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         private List<String> mReplyIds = new ArrayList<>();
         private List<Reply> mReplies = new ArrayList<>();
-        private List<String> mTimeStamps = new ArrayList<>();
 
         public ReplyAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
@@ -445,4 +457,5 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
     }
+
 }
