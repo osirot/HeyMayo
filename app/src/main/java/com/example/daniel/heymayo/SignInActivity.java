@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class SignInActivity extends BaseActivity {
+public class SignInActivity extends MainActivity {
 
     private static final String TAG = "AnonymousAuth";
 
@@ -29,7 +29,6 @@ public class SignInActivity extends BaseActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-
     }
 
     @Override
@@ -48,7 +47,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void onAuthSuccess() {
-        startActivity(new Intent(SignInActivity.this, RequestPostActivity.class));
+        startActivity(new Intent(SignInActivity.this, MapsActivity.class));
         Log.d(TAG, "Auth successful, starting RequestPostActivity");
         finish();
     }
@@ -74,13 +73,15 @@ public class SignInActivity extends BaseActivity {
         });
     }
 
-    private void signOut() {
-        mAuth.signOut();
-    }
-
     private void writeNewUser(String userId, String token) {
         User user = new User(userId, token);
         mDatabase.child("users").child(userId).setValue(user);
         Log.d(TAG, "Saving user ID " + userId + " to database");
     }
+
+    // do not use except for testing
+    //private void signOut() {
+    //    mAuth.signOut();
+    //    Log.d(TAG, "User logged out");
+    //}
 }

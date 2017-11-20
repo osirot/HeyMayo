@@ -11,10 +11,15 @@ import android.view.View;
 import android.graphics.Color;
 
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.daniel.heymayo.fragments.PostListFragment;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -25,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.os.Handler;
@@ -48,10 +54,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener, LocationListener, GeoQueryEventListener {
 
     private GoogleMap mMap;
-    private FloatingActionButton firebaseButton;
+
+    //private FloatingActionButton firebaseButton;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
+
+    private FragmentPagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
     private static final String TAG = "MapsActivity";
     //for geoFire
     private LatLng myLocation;
@@ -68,19 +78,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
-
-        firebaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postActivity(v);
-            }
-        });
-
+        // will reuse the button code later
+        //firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
+        //firebaseButton.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
+        //        postActivity(v);
+        //    }
+        //});
         //connect to google services
         createGoogleApiClient();
         createLocationRequest();
@@ -90,12 +98,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.markers = new HashMap<String, Marker>();
         //Log.e(TAG, "Value: " + markers);
 
+        //loads PostListFragment into viewPager on maps activity view
+        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            private final Fragment[] mFragments = new Fragment[] { new PostListFragment() };
+            @Override
+            public Fragment getItem(int position) { return mFragments[position]; }
+            @Override
+            public int getCount() { return mFragments.length; }
+        };
+        // this points program to the right view element
+        mViewPager = findViewById(R.id.viewPager);
+        // this sets the above adapter to the view pager
+        mViewPager.setAdapter(mPagerAdapter);
     }
 
-    public void postActivity(View view) {
-        Intent intent = new Intent(this, SignInActivity.class);
-        startActivity(intent);
-    }
+    // deprecated; called in MainActivity
+    //public void postActivity(View view) {
+    //    Intent intent = new Intent(this, SignInActivity.class);
+    //    startActivity(intent);
+    //}
 
     @Override
     public void onConnected(Bundle connectionHint){

@@ -6,18 +6,14 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.daniel.heymayo.fragments.RequestsFragment;
 import com.example.daniel.heymayo.models.Request;
 import com.example.daniel.heymayo.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,8 +41,8 @@ public class RequestPostActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private EditText mBodyField;
     private FloatingActionButton mSubmitButton;
-    private FragmentPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
+    //private FragmentPagerAdapter mPagerAdapter;
+    //private ViewPager mViewPager;
     private GeoFire geoFire;
     private static final String GEO_FIRE_DB = "https://heymayo-test.firebaseio.com/";
     private static final String GEO_FIRE_REF = GEO_FIRE_DB + "locations";
@@ -67,7 +63,7 @@ public class RequestPostActivity extends BaseActivity {
                 mBodyField.getText().clear();
             }
         });
-
+/*
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             private final Fragment[] mFragments = new Fragment[] {
                     new RequestsFragment()
@@ -84,6 +80,7 @@ public class RequestPostActivity extends BaseActivity {
 
         mViewPager = findViewById(R.id.viewPager);
         mViewPager.setAdapter(mPagerAdapter);
+*/
     }
 
 
@@ -150,6 +147,8 @@ public class RequestPostActivity extends BaseActivity {
         mDatabase.updateChildren(childUpdates);
     }
 
+    //deprecated - not needed (no menu bar)
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -168,4 +167,5 @@ public class RequestPostActivity extends BaseActivity {
             return super.onOptionsItemSelected(item);
         }
     }
+*/
 }

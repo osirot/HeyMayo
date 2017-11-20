@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RequestPostActivity">
+    tools:context=".fragments.PostListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messages_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:clipToPadding="false"
         android:padding="5dp"
         android:scrollbars="vertical"
