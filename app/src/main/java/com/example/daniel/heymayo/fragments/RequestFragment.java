@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.daniel.heymayo.R;
 import com.example.daniel.heymayo.ReplyActivity;
+import com.example.daniel.heymayo.ReplyTestActivity;
 import com.example.daniel.heymayo.models.Request;
 import com.example.daniel.heymayo.models.Time;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -87,7 +88,7 @@ public class RequestFragment extends Fragment {
                     public void onClick(View v) {
                         // Launch PostDetailActivity
                         Intent intent = new Intent(getActivity(), ReplyActivity.class);
-                        intent.putExtra(ReplyActivity.EXTRA_POST_KEY, postKey);
+                        intent.putExtra(ReplyActivity.EXTRA_POST_KEY, postKey); //
                         startActivity(intent);
                     }
                 });
@@ -145,8 +146,8 @@ public class RequestFragment extends Fragment {
             //titleView = itemView.findViewById(R.id.post_title);
             //authorView = itemView.findViewById(R.id.post_author);
             //userId = itemView.findViewById(R.id.post_author);
-            bodyView = itemView.findViewById(R.id.post_body);
-            timeStamp = itemView.findViewById(R.id.post_time);
+            bodyView = itemView.findViewById(R.id.include_body);
+            timeStamp = itemView.findViewById(R.id.reply_time);
         }
 
         public void bindToPost(Request request) {

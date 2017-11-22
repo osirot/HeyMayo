@@ -11,13 +11,22 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Karma {
 
-    public Boolean karmaPt;
+    public Boolean karma;
+    public int points = 0;
 
     public Karma() {}
 
-    public Karma(Boolean karmaPt) {
-        this.karmaPt = karmaPt;
+    public Karma(Boolean karma, int points) {
+        this.karma = karma;
+        this.points = points;
+    }
 
+    public void pointCounter() {
+        this.points++;
+    }
+
+    public int getPoints() {
+        return this.points;
     }
 
     public void storeInDb() {

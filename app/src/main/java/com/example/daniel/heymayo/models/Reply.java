@@ -2,6 +2,7 @@ package com.example.daniel.heymayo.models;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.PropertyName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,23 +15,16 @@ public class Reply {
 
     public String uid;
     public String body;
-    public long timestamp;
-    public Boolean points;
+    public String timestamp;
+    public int starCount = 0;
+    public Map<String, Boolean> stars = new HashMap<>();
 
     public Reply() {}
 
-    public Reply(String uid, String body, long timestamp) {
+    public Reply(String uid, String body, String timestamp) {
         this.uid = uid;
         this.body = body;
         this.timestamp = timestamp;
-        this.points = false;
-    }
-
-    public Reply(String uid, String body, long timestamp, Boolean stars) {
-        this.uid = uid;
-        this.body = body;
-        this.timestamp = timestamp;
-        this.points = stars;
     }
 
     @Exclude
@@ -39,8 +33,14 @@ public class Reply {
         result.put("uid", uid);
         result.put("body", body);
         result.put("timestamp", timestamp);
-        result.put("points", points);
+        result.put("starCount", starCount);
+        result.put("stars", stars);
 
         return result;
+    }
+
+    @PropertyName("timestamp")
+    public String getTimeStamp() {
+        return this.timestamp;
     }
 }
