@@ -7,9 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,9 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.daniel.heymayo.models.Karma;
 import com.example.daniel.heymayo.models.Reply;
-//import com.example.daniel.heymayo.models.TestReply;
 import com.example.daniel.heymayo.models.Time;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -28,8 +24,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -66,8 +60,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseReference mDatabase;
     private ImageView starView;
 
-   // private Karma karma;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,48 +88,46 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         mReplyButton.setOnClickListener(this);
         mReplyRecycler.setLayoutManager(new LinearLayoutManager(this));
-
-       // karma = new Karma();
-
+/*
         // creates a listener attached to recyclerView that activates when an element in the
         // recyclerView is touched or long touched
- //       mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, mReplyRecycler, new ClickListener() {
- //           @Override
- //           public void onClick(View view, final int position) {
-//                ValueEventListener postListener = new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        // Get Post object and use the values to update the UI
-//                        Reply post = dataSnapshot.getValue(Reply.class);
-//                        body = post.body;
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        // Getting Post failed, log a message
-//                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                    }
-//                };
-//                mReplyReference.addValueEventListener(postListener);
-//                Log.d("TESTING", "" + body);
-        //        ImageView star_outline = view.findViewById(R.id.star_outline);
-        //        star_outline.setOnClickListener(new View.OnClickListener() {
-        //            @Override
-        //            public void onClick(View v) {
-        //                karma.pointCounter();
-        //                //Toast.makeText(ReplyActivity.this, "Single Click on Image at position " + position, Toast.LENGTH_SHORT).show();
-        //                Karma.logPost("user has " + karma.getPoints() + " points!");
-        //            }
-        //        });
-        //        //Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
-        //        Toast.makeText(ReplyActivity.this, "Single press on position: " + position, Toast.LENGTH_SHORT).show();
-//            }
-//            @Override
-//            public void onLongClick(View view, int position) {
-        //        //Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
-        //        Toast.makeText(ReplyActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
-//            }
-  //      }));
+        mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, mReplyRecycler, new ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                ValueEventListener postListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get Post object and use the values to update the UI
+                        Reply post = dataSnapshot.getValue(Reply.class);
+                        body = post.body;
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    }
+                };
+                mReplyReference.addValueEventListener(postListener);
+                Log.d("TESTING", "" + body);
+                ImageView star_outline = view.findViewById(R.id.star_outline);
+                star_outline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        karma.pointCounter();
+                        //Toast.makeText(ReplyActivity.this, "Single Click on Image at position " + position, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                //Log.d("RPA_TOUCH_LISTENER", "single touch event on position " + position);
+                Toast.makeText(ReplyActivity.this, "Single press on position: " + position, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onLongClick(View view, int position) {
+                //Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
+                Toast.makeText(ReplyActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
+            }
+        }));
+*/
     }
 
     @Override
@@ -221,7 +211,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                                     Toast.LENGTH_SHORT).show();
                         } else {
 
-                            writeNewRequest(userId, body, timestamp);
+                            writeNewReply(userId, body, timestamp);
                             mReplyField.setText(null);
                         }
                         setEditingEnabled(true);
@@ -244,7 +234,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void writeNewRequest(String userId, String body, long unixTime) {
+    private void writeNewReply(String userId, String body, long unixTime) {
         String key = mReplyReference.push().getKey();
         Reply reply = new Reply(userId, body, unixTime);
         Map<String, Object> postValues = reply.toMap();
@@ -254,18 +244,53 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }
 
-    //private void addKarma(Reply reply) {
-    //    String key = mReplyReference.push().getKey();
-    //}
-
     private String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 
-    private void onStarClicked(DatabaseReference postRef) {
-        Log.d("onStarsClicked", "" + postRef);
-        postRef.runTransaction(new Transaction.Handler() {
+    private void onStarClicked(final Reply reply, final DatabaseReference postRef) {
+
+        // Need to write to both places the post is stored
+        final DatabaseReference globalPostRef = mDatabase.child("replies").child(postRef.getKey());
+        final DatabaseReference userPostRef = mDatabase.child("user-posts").child(reply.uid).child("replies").child(postRef.getKey());
+        // location of where points count is kept
+        final DatabaseReference userCount = mDatabase.child("users").child(reply.uid);
+
+        Log.d("postRef", "" + postRef);
+        Log.d("globalPostRef:", "" + globalPostRef.getKey());
+        Log.d("userPostRef:", "" + userPostRef.getKey());
+        Log.d("userCount:", "" + userCount);
+        //Log.d("Reply Data:", reply.body + " " + reply.uid + " " + reply.timestamp + " " + reply.karma);
+
+        globalPostRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Reply requestReply = dataSnapshot.getValue(Reply.class);
+                Log.d("Value is", "" + requestReply.karma);
+                requestReply.updateKarma(true);
+                //globalPostRef.child().setValue(true);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        userPostRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Reply userPostReply = dataSnapshot.getValue(Reply.class);
+                Log.d("Value is", "" + userPostReply.karma);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        /*postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Reply p = mutableData.getValue(Reply.class);
@@ -275,12 +300,11 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
                 if (p.stars.containsKey(getUid())) {
                     // Unstar the post and remove self from stars
-                    //p.starCount = p.starCount - 1;
-                    //p.stars.remove(getUid());
-                    p.stars.put(getUid(), false);
+                    p.starCount = p.starCount - 1;
+                    p.stars.remove(getUid());
                 } else {
                     // Star the post and add self to stars
-                    //p.starCount = p.starCount + 1;
+                    p.starCount = p.starCount + 1;
                     p.stars.put(getUid(), true);
                 }
 
@@ -295,61 +319,63 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 // Transaction completed
                 Log.d(TAG, "postTransaction:onComplete:" + databaseError);
             }
-        });
+        });*/
     }
 
-//---------------
+    private void updateKarmaPoints(DatabaseReference postRef) {
+        Log.d("updateKarmaPoints:", "" + postRef);
+    }
+
+/*
 
     //custom view holder static class
-    //private static class ReplyViewHolder extends RecyclerView.ViewHolder {
+    private static class ReplyViewHolder extends RecyclerView.ViewHolder {
 
         //public TextView authorView;
-//        public TextView bodyView;
-//        public TextView timeStamp;
+        public TextView bodyView;
+        public TextView timeStamp;
 
-//        public ReplyViewHolder(View itemView) {
-//            super(itemView);
-//            //authorView = itemView.findViewById(R.id.reply_author);
-//            bodyView = itemView.findViewById(R.id.reply_body);
-//            timeStamp = itemView.findViewById(R.id.reply_time);
-//        }
+        public ReplyViewHolder(View itemView) {
+            super(itemView);
+            //authorView = itemView.findViewById(R.id.reply_author);
+            bodyView = itemView.findViewById(R.id.reply_body);
+            timeStamp = itemView.findViewById(R.id.reply_time);
+        }
 
-//        public void bind(Reply reply) {
-//            //authorView.setText(reply.uid);
-//            bodyView.setText(reply.body);
-//            timeStamp.setText(Time.formatDateTime(reply.timeStamp));
-//        }
-//    }
+        public void bind(Reply reply) {
+            //authorView.setText(reply.uid);
+            bodyView.setText(reply.body);
+            timeStamp.setText(Time.formatDateTime(reply.timeStamp));
+        }
+    }
 
     //custom view holder static class
-//    private static class RequestViewHolder extends RecyclerView.ViewHolder {
+    private static class RequestViewHolder extends RecyclerView.ViewHolder {
 
-        //public TextView authorView;
-//        public TextView bodyView;
-//        public TextView timeStamp;
-//
-//        public RequestViewHolder(View itemView) {
-//            super(itemView);
-//            //authorView = itemView.findViewById(R.id.requestor_reply_author);
-//            bodyView = itemView.findViewById(R.id.requestor_reply_body);
-//            timeStamp = itemView.findViewById(R.id.requestor_reply_time);
-//        }
+        public TextView authorView;
+        public TextView bodyView;
+        public TextView timeStamp;
 
-//        public void bind(Reply reply) {
+        public RequestViewHolder(View itemView) {
+            super(itemView);
+            //authorView = itemView.findViewById(R.id.requestor_reply_author);
+            bodyView = itemView.findViewById(R.id.requestor_reply_body);
+            timeStamp = itemView.findViewById(R.id.requestor_reply_time);
+        }
+
+        public void bind(Reply reply) {
            //authorView.setText(reply.uid);
-//            bodyView.setText(reply.body);
-//            timeStamp.setText(Time.formatDateTime(reply.timeStamp));
-//        }
-//    }
-
-//--------------
+           bodyView.setText(reply.body);
+           timeStamp.setText(Time.formatDateTime(reply.timeStamp));
+        }
+    }
+*/
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
 
         //public TextView titleView;
         //public TextView authorView;
         public ImageView starView;
-        public TextView numStarsView;
         public TextView bodyView;
         public TextView timeStamp;
 
@@ -359,7 +385,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             //titleView = itemView.findViewById(R.id.post_title);
             //authorView = itemView.findViewById(R.id.post_author);
             starView = itemView.findViewById(R.id.reply_star);
-            numStarsView = itemView.findViewById(R.id.post_num_stars);
             bodyView = itemView.findViewById(R.id.reply_body);
             timeStamp = itemView.findViewById(R.id.reply_time);
         }
@@ -367,7 +392,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         public void bindToPost(Reply reply, View.OnClickListener starClickListener) {
             //titleView.setText(reply.title);
             //authorView.setText(reply.author);
-            //numStarsView.setText(String.valueOf(reply.starCount));
             bodyView.setText(reply.body);
             timeStamp.setText(Time.formatDateTime(reply.timestamp));
 
@@ -401,7 +425,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                     Log.d(TAG, "TEST DEBUG:" + ref);
                     Log.d(TAG, "TestOutput:" + dataSnapshot.getKey());
                     // A new reply has been added, add it to the displayed list
-                    Reply reply = (Reply) dataSnapshot.getValue(Reply.class);
+                    Reply reply = dataSnapshot.getValue(Reply.class);
 
                     // Update RecyclerView
                     mReplyIds.add(dataSnapshot.getKey());
@@ -450,19 +474,20 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            //View view;
-            //LayoutInflater inflater = LayoutInflater.from(mContext);
-            // uses viewType to determine if this was sent by you or someone else and
-            // redirects to the correct view holder
-            //if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            //    view = inflater.inflate(R.layout.item_reply_user, parent, false);
-            //    return new RequestViewHolder(view);
-            //} else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
-            //    view = inflater.inflate(R.layout.item_reply_others, parent, false);
-            //    return new ReplyViewHolder(view);
-            //}
-            //return null;
+            /*
+            View view;
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+             uses viewType to determine if this was sent by you or someone else and
+             redirects to the correct view holder
+            if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+                view = inflater.inflate(R.layout.item_reply_user, parent, false);
+                return new RequestViewHolder(view);
+            } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+                view = inflater.inflate(R.layout.item_reply_others, parent, false);
+                return new ReplyViewHolder(view);
+            }
+            return null;
+             */
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             return new PostViewHolder(inflater.inflate(R.layout.item_reply, parent, false));
         }
@@ -474,7 +499,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             final DatabaseReference postRef = mDatabaseReference.getRef();
 
             // Determine if the current user has liked this post and set UI accordingly
-            if (model.stars.containsKey(getUid())) {
+            if (model.karma) {
                 holder.starView.setImageResource(R.drawable.ic_toggle_star_24);
             } else {
                 holder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
@@ -484,13 +509,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             holder.bindToPost(model, new View.OnClickListener() {
                 @Override
                 public void onClick(View starView) {
-                    // Need to write to both places the post is stored
-                    DatabaseReference globalPostRef = mDatabase.child("replies").child(postRef.getKey());
-                    DatabaseReference userPostRef = mDatabase.child("user-posts").child(model.uid).child(postRef.getKey());
-
-                    // Run two transactions
-                    onStarClicked(globalPostRef);
-                    onStarClicked(userPostRef);
+                    onStarClicked(model, postRef);
                 }
             });
         }
@@ -520,47 +539,48 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     }
 
 //-------
-
+/*
     // click listener interface
-//    private interface ClickListener {
-//        void onClick(View view, int position);
-//        void onLongClick(View view, int position);
-//    }
+    private interface ClickListener {
+        void onClick(View view, int position);
+        void onLongClick(View view, int position);
+    }
 
     // touch listener inner class for processing touch events
-//    private class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+    private class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-//        private ClickListener clicklistener;
-//        private GestureDetector gestureDetector;
+        private ClickListener clicklistener;
+        private GestureDetector gestureDetector;
 
-//        public RecyclerTouchListener(Context context, final RecyclerView recycleView, final ClickListener clicklistener){
-//            this.clicklistener=clicklistener;
-//            gestureDetector=new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
-//                @Override
-//                public boolean onSingleTapUp(MotionEvent e) {
-//                    return true;
-//                }
-//                @Override
-//                public void onLongPress(MotionEvent e) {
-//                    View child = recycleView.findChildViewUnder(e.getX(), e.getY());
-//                    if (child != null && clicklistener != null){
-//                        clicklistener.onLongClick(child, recycleView.getChildAdapterPosition(child));
-//                    }
-//                }
- //           });
-//        }
-//        @Override
-//        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-//            View child = rv.findChildViewUnder(e.getX(), e.getY());
-//            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)){
-//                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
-//                //return true;
-//            }
-//            return false;
-//        }
-//        @Override
-//        public void onTouchEvent(RecyclerView rv, MotionEvent e) {}
-//        @Override
-//        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
-//    }
+        public RecyclerTouchListener(Context context, final RecyclerView recycleView, final ClickListener clicklistener){
+            this.clicklistener=clicklistener;
+            gestureDetector=new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recycleView.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clicklistener != null){
+                        clicklistener.onLongClick(child, recycleView.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)){
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+                //return true;
+            }
+            return false;
+        }
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {}
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
+    }
+*/
 }

@@ -16,8 +16,7 @@ public class Reply {
     public String uid;
     public String body;
     public long timestamp;
-    //public int starCount = 0;
-    public Map<String, Boolean> stars = new HashMap<>();
+    public Boolean karma = false;
 
     public Reply() {}
 
@@ -27,11 +26,11 @@ public class Reply {
         this.timestamp = timestamp;
     }
 
-    public Reply(String uid, String body, long timestamp, Map<String, Boolean> stars) {
+    public Reply(String uid, String body, long timestamp, Boolean karma) {
         this.uid = uid;
         this.body = body;
         this.timestamp = timestamp;
-        this.stars = stars;
+        this.karma = karma;
     }
 
 
@@ -41,8 +40,7 @@ public class Reply {
         result.put("uid", uid);
         result.put("body", body);
         result.put("timestamp", timestamp);
-        //result.put("starCount", starCount);
-        result.put("stars", stars);
+        result.put("karma", karma);
 
         return result;
     }
@@ -50,5 +48,9 @@ public class Reply {
     @PropertyName("timestamp")
     public long getTimeStamp() {
         return this.timestamp;
+    }
+
+    public void updateKarma(Boolean karma) {
+        this.karma = karma;
     }
 }
