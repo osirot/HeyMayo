@@ -27,6 +27,21 @@ public class Reply {
         this.timestamp = timestamp;
     }
 
+    public Reply(String uid, String body, long timestamp, Map<String, Boolean> stars) {
+        this.uid = uid;
+        this.body = body;
+        this.timestamp = timestamp;
+        this.stars = stars;
+    }
+
+    public Reply(String uid, String body, long timestamp, Map<String, Boolean> stars, int StarCount) {
+        this.uid = uid;
+        this.body = body;
+        this.timestamp = timestamp;
+        this.stars = stars;
+        this.starCount = starCount;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

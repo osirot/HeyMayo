@@ -274,11 +274,12 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
                 if (p.stars.containsKey(getUid())) {
                     // Unstar the post and remove self from stars
-                    p.starCount = p.starCount - 1;
-                    p.stars.remove(getUid());
+                    //p.starCount = p.starCount - 1;
+                    //p.stars.remove(getUid());
+                    p.stars.put(getUid(), false);
                 } else {
                     // Star the post and add self to stars
-                    p.starCount = p.starCount + 1;
+                    //p.starCount = p.starCount + 1;
                     p.stars.put(getUid(), true);
                 }
 
@@ -387,7 +388,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         private List<Reply> mReplies = new ArrayList<>();
 
 
-        public ReplyAdapter(final Context context, DatabaseReference ref) {
+        public ReplyAdapter(final Context context, final DatabaseReference ref) {
             mContext = context;
             mDatabaseReference = ref;
 
@@ -396,9 +397,10 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-                    //Log.d(TAG, "TestOutput:" + mReplyReference.child(dataSnapshot.getKey()).child("timestamp"));
+                    Log.d(TAG, "TEST DEBUG:" + ref);
+                    Log.d(TAG, "TestOutput:" + dataSnapshot.getKey());
                     // A new reply has been added, add it to the displayed list
-                    Reply reply = dataSnapshot.getValue(Reply.class);
+                    Reply reply = (Reply) dataSnapshot.getValue(Reply.class);
 
                     // Update RecyclerView
                     mReplyIds.add(dataSnapshot.getKey());
