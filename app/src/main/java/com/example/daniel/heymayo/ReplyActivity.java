@@ -264,6 +264,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void onStarClicked(DatabaseReference postRef) {
+        Log.d("onStarsClicked", "" + postRef);
         postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -366,7 +367,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         public void bindToPost(Reply reply, View.OnClickListener starClickListener) {
             //titleView.setText(reply.title);
             //authorView.setText(reply.author);
-            numStarsView.setText(String.valueOf(reply.starCount));
+            //numStarsView.setText(String.valueOf(reply.starCount));
             bodyView.setText(reply.body);
             timeStamp.setText(Time.formatDateTime(reply.timestamp));
 
