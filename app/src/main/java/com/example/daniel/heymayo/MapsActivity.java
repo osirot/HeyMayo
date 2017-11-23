@@ -1,13 +1,16 @@
 package com.example.daniel.heymayo;
 
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.fragments.RequestFragment;
@@ -27,7 +30,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
-    //private FloatingActionButton firebaseButton;
+    private FloatingActionButton firebaseButton;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -43,15 +46,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        final Intent postRequest = new Intent(this, RequestPostActivity.class);
         // will reuse the button code later
-        //firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
-        //firebaseButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View v) {
-        //        postActivity(v);
-        //    }
-        //});
+        firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
+        firebaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.getParent();
+                startActivity(postRequest);
+                //finish();
+            }
+        });
 
         //connect to google services
         createGoogleApiClient();
@@ -72,10 +77,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // deprecated; called in MainActivity
-    //public void postActivity(View view) {
-    //    Intent intent = new Intent(this, SignInActivity.class);
-    //    startActivity(intent);
-    //}
+    public void postActivity(View view) {
+        Intent intent = new Intent(this, RequestPostActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public void onConnected(Bundle connectionHint){

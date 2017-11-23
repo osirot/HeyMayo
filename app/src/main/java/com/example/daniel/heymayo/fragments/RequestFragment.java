@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.daniel.heymayo.R;
 import com.example.daniel.heymayo.ReplyActivity;
-import com.example.daniel.heymayo.ReplyTestActivity;
 import com.example.daniel.heymayo.models.Request;
 import com.example.daniel.heymayo.models.Time;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -147,7 +146,7 @@ public class RequestFragment extends Fragment {
             //authorView = itemView.findViewById(R.id.post_author);
             //userId = itemView.findViewById(R.id.post_author);
             bodyView = itemView.findViewById(R.id.include_body);
-            timeStamp = itemView.findViewById(R.id.reply_time);
+            timeStamp = itemView.findViewById(R.id.request_time);
         }
 
         public void bindToPost(Request request) {

@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestPostActivity extends MainActivity {
+public class RequestPostActivity extends SignInActivity {
 
     private static final String TAG = "RequestPostActivity";
     private static final String REQUIRED = "Required";

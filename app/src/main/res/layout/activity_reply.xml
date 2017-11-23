@@ -46,7 +46,7 @@
         android:id="@+id/recycler_replies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_reply_others"
+        tools:listitem="@layout/item_reply"
         android:layout_below="@id/requestor_card"
         android:layout_above="@id/reply_form"
         android:layout_alignParentStart="true"

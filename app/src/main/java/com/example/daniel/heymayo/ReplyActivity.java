@@ -64,13 +64,14 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private Button mReplyButton;
     private RecyclerView mReplyRecycler;
     private DatabaseReference mDatabase;
+    private ImageView starView;
 
    // private Karma karma;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reply_test);
+        setContentView(R.layout.activity_reply);
 
         // Get post key from intent
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
@@ -86,11 +87,12 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         // Initialize Views
         //mAuthorView = findViewById(R.id.post_author);
         mBodyView = findViewById(R.id.include_body);
-        mTimeStamp = findViewById(R.id.reply_time);
+        mTimeStamp = findViewById(R.id.request_time);
         //mTimeStamp = findViewById(R.id.reply_time);
-        mReplyField = findViewById(R.id.test_field_reply_text);
-        mReplyButton = findViewById(R.id.test_button_post_reply);
-        mReplyRecycler = findViewById(R.id.test_recycler_replies);
+        mReplyField = findViewById(R.id.field_reply_text);
+        mReplyButton = findViewById(R.id.button_post_reply);
+        mReplyRecycler = findViewById(R.id.recycler_replies);
+        starView = (ImageView) findViewById(R.id.reply_star);
 
         mReplyButton.setOnClickListener(this);
         mReplyRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -195,7 +197,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private void postReply() {
         final String body = mReplyField.getText().toString();
         final String userId = getUid();
-        final String timestamp = String.valueOf(Time.getUnixTime());
+        final long timestamp = Time.getUnixTime();
 
         if (TextUtils.isEmpty(body)) {
             mReplyField.setError(REQUIRED);
@@ -242,7 +244,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void writeNewRequest(String userId, String body, String unixTime) {
+    private void writeNewRequest(String userId, String body, long unixTime) {
         String key = mReplyReference.push().getKey();
         Reply reply = new Reply(userId, body, unixTime);
         Map<String, Object> postValues = reply.toMap();
@@ -354,18 +356,18 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
             //titleView = itemView.findViewById(R.id.post_title);
             //authorView = itemView.findViewById(R.id.post_author);
-            starView = itemView.findViewById(R.id.star);
+            starView = itemView.findViewById(R.id.reply_star);
             numStarsView = itemView.findViewById(R.id.post_num_stars);
-            bodyView = itemView.findViewById(R.id.include_body);
+            bodyView = itemView.findViewById(R.id.reply_body);
             timeStamp = itemView.findViewById(R.id.reply_time);
         }
 
-        public void bindToPost(Reply post, View.OnClickListener starClickListener) {
-            //titleView.setText(post.title);
-            //authorView.setText(post.author);
-            numStarsView.setText(String.valueOf(post.starCount));
-            bodyView.setText(post.body);
-            timeStamp.setText(Time.formatDateTime(Long.valueOf(post.timestamp)));
+        public void bindToPost(Reply reply, View.OnClickListener starClickListener) {
+            //titleView.setText(reply.title);
+            //authorView.setText(reply.author);
+            numStarsView.setText(String.valueOf(reply.starCount));
+            bodyView.setText(reply.body);
+            timeStamp.setText(Time.formatDateTime(reply.timestamp));
 
             starView.setOnClickListener(starClickListener);
         }
@@ -459,7 +461,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             //}
             //return null;
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            return new PostViewHolder(inflater.inflate(R.layout.test_reply_activity, parent, false));
+            return new PostViewHolder(inflater.inflate(R.layout.item_reply, parent, false));
         }
 
         // use this to set points to true or false
