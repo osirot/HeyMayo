@@ -53,7 +53,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private ValueEventListener mPostListener;
     private String mPostKey;
     private ReplyAdapter mAdapter;
-    //private TextView mAuthorView;
     private TextView mBodyView;
     private TextView mTimeStamp;
     private EditText mReplyField;
@@ -79,10 +78,8 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         mReplyReference = mDatabase.child("replies").child(mPostKey);
 
         // Initialize Views
-        //mAuthorView = findViewById(R.id.post_author);
         mBodyView = findViewById(R.id.include_body);
         mTimeStamp = findViewById(R.id.request_time);
-        //mTimeStamp = findViewById(R.id.reply_time);
         mReplyField = findViewById(R.id.field_reply_text);
         mReplyButton = findViewById(R.id.button_post_reply);
         mReplyRecycler = findViewById(R.id.recycler_replies);
@@ -90,8 +87,8 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         mReplyButton.setOnClickListener(this);
         mReplyRecycler.setLayoutManager(new LinearLayoutManager(this));
-/*
-        // creates a listener attached to recyclerView that activates when an element in the
+        // keeping the following code because we may need it later
+/*      // creates a listener attached to recyclerView that activates when an element in the
         // recyclerView is touched or long touched
         mReplyRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, mReplyRecycler, new ClickListener() {
             @Override
@@ -128,8 +125,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 //Log.d("RPA_TOUCH_LISTENER", "long touch event on position " + position);
                 Toast.makeText(ReplyActivity.this, "Long press on position: " + position, Toast.LENGTH_SHORT).show();
             }
-        }));
-*/
+        })); */
     }
 
     @Override
@@ -253,13 +249,12 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
     private void onStarClicked(final Reply reply, final DatabaseReference postRef, final String replyKey) {
 
-        // Need to write to both places the post is stored
+        // set a flag in both of these places to indicate karma points given
         final DatabaseReference globalPostRef = mDatabase.child("replies").child(postRef.getKey()).child(replyKey);
         final DatabaseReference userPostRef = mDatabase.child("user-posts").child(reply.uid).child("replies").child(postRef.getKey()).child(replyKey);
-        // location of where points count is kept
+        // location of where points count is kept - this gets incremented every time user earns karma point
         final DatabaseReference userCount = mDatabase.child("users").child(reply.uid);
 
-        //Log.d("karma:", "" + reply.karma);
         if (reply.karma) {
             globalPostRef.child("karma").setValue(false);
             userPostRef.child("karma").setValue(false);
@@ -270,6 +265,8 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             updateKarmaPoints(userCount, true);
         }
 
+        // debugging code
+        //Log.d("karma:", "" + reply.karma);
         //Log.d("postRef:", "" + postRef);
         //Log.d("globalPostRef:", "" + globalPostRef);
         //Log.d("userPostRef:", "" + userPostRef);
@@ -277,22 +274,23 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void updateKarmaPoints(DatabaseReference postRef, final Boolean karma) {
-
+        // this creates a transaction which puts a lock on the field being updated
+        // to prevent simultaneous updates / data getting overwritten
         postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 User u = mutableData.getValue(User.class);
+                // if the user is null, it returns nothing
                 if (u == null) {
                     return Transaction.success(mutableData);
                 }
-                // if the user has karma, add 1 to karmaPoints
+                // if the user has karma, add 1 to karmaPoints field
                 if (karma) {
                     u.karmaPoints = u.karmaPoints + 1;
-                // else, subtract 1 from karma points (assumes being taken away)
+                // else, subtract 1 from karmaPoints (assumes being taken away)
                 } else {
                     u.karmaPoints = u.karmaPoints - 1;
                 }
-
                 // Set value and report transaction success
                 mutableData.setValue(u);
                 return Transaction.success(mutableData);
@@ -328,60 +326,48 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             bodyView.setText(reply.body);
             timeStamp.setText(Time.formatDateTime(reply.timeStamp));
         }
-    }
+    }*/
 
     //custom view holder static class
-    private static class RequestViewHolder extends RecyclerView.ViewHolder {
+    private static class UserViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView authorView;
         public TextView bodyView;
         public TextView timeStamp;
 
-        public RequestViewHolder(View itemView) {
+        public UserViewHolder(View itemView) {
             super(itemView);
-            //authorView = itemView.findViewById(R.id.requestor_reply_author);
             bodyView = itemView.findViewById(R.id.requestor_reply_body);
             timeStamp = itemView.findViewById(R.id.requestor_reply_time);
         }
 
-        public void bind(Reply reply) {
-           //authorView.setText(reply.uid);
+        public void bindToPost(Reply reply) {
            bodyView.setText(reply.body);
-           timeStamp.setText(Time.formatDateTime(reply.timeStamp));
+           timeStamp.setText(Time.formatDateTime(reply.timestamp));
         }
     }
-*/
 
-    public class PostViewHolder extends RecyclerView.ViewHolder {
+    public class NotUserPostViewHolder extends RecyclerView.ViewHolder {
 
-        //public TextView titleView;
-        //public TextView authorView;
         public ImageView starView;
         public TextView bodyView;
         public TextView timeStamp;
 
-        public PostViewHolder(View itemView) {
+        public NotUserPostViewHolder(View itemView) {
             super(itemView);
-
-            //titleView = itemView.findViewById(R.id.post_title);
-            //authorView = itemView.findViewById(R.id.post_author);
             starView = itemView.findViewById(R.id.reply_star);
             bodyView = itemView.findViewById(R.id.reply_body);
             timeStamp = itemView.findViewById(R.id.reply_time);
         }
 
         public void bindToPost(Reply reply, View.OnClickListener starClickListener) {
-            //titleView.setText(reply.title);
-            //authorView.setText(reply.author);
             bodyView.setText(reply.body);
             timeStamp.setText(Time.formatDateTime(reply.timestamp));
-
             starView.setOnClickListener(starClickListener);
         }
     }
 
     //custom adapter class
-    private class ReplyAdapter extends RecyclerView.Adapter<PostViewHolder> {
+    private class ReplyAdapter extends RecyclerView.Adapter {
 
         private static final int VIEW_TYPE_MESSAGE_SENT = 1;
         private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
@@ -402,17 +388,19 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                    // debug code
                     //Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
                     //Log.d(TAG, "TEST DEBUG:" + ref);
                     //Log.d(TAG, "reply post key:" + dataSnapshot.getKey());
+
                     // A new reply has been added, add it to the displayed list
                     Reply reply = dataSnapshot.getValue(Reply.class);
-                    //Log.d(TAG,"onChildAdded-reply:" + reply.karma);
+
                     // Update RecyclerView
                     mReplyIds.add(dataSnapshot.getKey());
-                    //Log.d(TAG,"TESTOUTPUT:" + dataSnapshot.getKey());
+
                     mReplies.add(reply);
-                    Log.d(TAG, "onChildAdded-mReply size:" + getItemCount());
+                    //Log.d(TAG, "onChildAdded-mReply size:" + getItemCount());
                     notifyItemInserted(mReplies.size() - 1);
                 }
 
@@ -424,9 +412,9 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                     // reply and if so displayed the changed reply.
                     Reply newReply = dataSnapshot.getValue(Reply.class);
                     String replyKey = dataSnapshot.getKey();
-                    //Log.d(TAG,"onChildChanged:newReply:" + newReply.karma);
+
                     int ReplyIndex = mReplyIds.indexOf(replyKey);
-                    //Log.d(TAG,"TESTOUTPUT:" + ReplyIndex);
+
                     if (ReplyIndex > -1) {
                         // Replace with the new data
                         mReplies.set(ReplyIndex, newReply);
@@ -454,44 +442,56 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            /*
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
             View view;
             LayoutInflater inflater = LayoutInflater.from(mContext);
-             uses viewType to determine if this was sent by you or someone else and
-             redirects to the correct view holder
+            // uses viewType to determine if this was sent by you or someone else and
+            // redirects to the correct view holder
             if (viewType == VIEW_TYPE_MESSAGE_SENT) {
                 view = inflater.inflate(R.layout.item_reply_user, parent, false);
-                return new RequestViewHolder(view);
+                return new UserViewHolder(view);
             } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
-                view = inflater.inflate(R.layout.item_reply_others, parent, false);
-                return new ReplyViewHolder(view);
+                view = inflater.inflate(R.layout.item_reply_not_user, parent, false);
+                return new NotUserPostViewHolder(view);
             }
             return null;
-             */
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            return new PostViewHolder(inflater.inflate(R.layout.item_reply, parent, false));
+
+            //LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            //return new NotUserPostViewHolder(inflater.inflate(R.layout.item_reply_not_user, parent, false));
         }
 
-        // use this to set points to true or false
         @Override
-        public void onBindViewHolder(final PostViewHolder holder, final int position) {
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final Reply model = mReplies.get(position);
             final DatabaseReference postRef = mDatabaseReference.getRef();
 
-            // Determine if the current user has liked this post and set UI accordingly
-            if (model.karma) {
-                holder.starView.setImageResource(R.drawable.ic_toggle_star_24);
-            } else {
-                holder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
+            switch (holder.getItemViewType()) {
+                // any replies that match your user id are sent to this view holder, which prevents
+                // giving yourself karma points
+                case VIEW_TYPE_MESSAGE_SENT:
+                    ((UserViewHolder) holder).bindToPost(model);
+                    //Log.d("viewHolder:", "you");
+                    break;
+                // this determines what data is sent to viewholder. it also holds logic for displaying if
+                // a post has been given karma points or not
+                case VIEW_TYPE_MESSAGE_RECEIVED:
+                    // Determine if the requestor has given user karma points and set UI accordingly
+                    if (model.karma) {
+                        ((NotUserPostViewHolder) holder).starView.setImageResource(R.drawable.ic_toggle_star_24);
+                    } else {
+                        ((NotUserPostViewHolder) holder).starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
+                    }
+                    // Bind Post to ViewHolder, setting OnClickListener for the karma button
+                    ((NotUserPostViewHolder) holder).bindToPost(model, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View starView) {
+                            onStarClicked(model, postRef, mReplyIds.get(position));
+                        }
+                    });
+                    //Log.d("viewHolder:", "not you");
+                    break;
             }
-            // Bind Post to ViewHolder, setting OnClickListener for the star button
-            holder.bindToPost(model, new View.OnClickListener() {
-                @Override
-                public void onClick(View starView) {
-                    onStarClicked(model, postRef, mReplyIds.get(position));
-                }
-            });
         }
 
         @Override
@@ -518,7 +518,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-//-------
+// keeping this code - it goes along with the commented out code in onCreate()
 /*
     // click listener interface
     private interface ClickListener {
