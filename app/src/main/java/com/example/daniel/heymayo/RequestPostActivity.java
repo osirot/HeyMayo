@@ -1,8 +1,6 @@
 package com.example.daniel.heymayo;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -16,20 +14,15 @@ import android.widget.Toast;
 import com.example.daniel.heymayo.models.Request;
 import com.example.daniel.heymayo.models.Time;
 import com.example.daniel.heymayo.models.User;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +34,6 @@ public class RequestPostActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private EditText mBodyField;
     private FloatingActionButton mSubmitButton;
-    //private FragmentPagerAdapter mPagerAdapter;
-    //private ViewPager mViewPager;
     private GeoFire geoFire;
     private static final String GEO_FIRE_DB = "https://heymayo-test.firebaseio.com/";
     //private static final String GEO_FIRE_REF = GEO_FIRE_DB + "/_geofire";
@@ -64,33 +55,11 @@ public class RequestPostActivity extends AppCompatActivity {
                 finish();
             }
         });
-/*
-        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            private final Fragment[] mFragments = new Fragment[] {
-                    new RequestsFragment()
-            };
-            @Override
-            public Fragment getItem(int position) {
-                return mFragments[position];
-            }
-            @Override
-            public int getCount() {
-                return mFragments.length;
-            }
-          };
-
-        mViewPager = findViewById(R.id.viewPager);
-        mViewPager.setAdapter(mPagerAdapter);
-*/
     }
-
-
-
 
     private void submitPost() {
         final String body = mBodyField.getText().toString();
         final String userId = getUid();
-        final long timestamp = Time.getUnixTime();
         if (TextUtils.isEmpty(body)) {
             mBodyField.setError(REQUIRED);
             return;
@@ -111,7 +80,7 @@ public class RequestPostActivity extends AppCompatActivity {
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            writeNewRequest(userId, body, timestamp);
+                            writeNewRequest(userId, body);
                         }
                         setEditingEnabled(true);
                     }
@@ -133,15 +102,14 @@ public class RequestPostActivity extends AppCompatActivity {
         }
     }
 
-    private void writeNewRequest(String userId, String body, long timeStamp) {
+    private void writeNewRequest(String userId, String body) {
 
         SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Double currentLat = Double.parseDouble(locationPrefs.getString("Latitude", "None"));
         Double currentLong = Double.parseDouble(locationPrefs.getString("Longitude", "None"));
         this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_DB + "locations"));
-
         String key = mDatabase.child("requests").push().getKey();
-        Request request = new Request(body, userId, timeStamp);
+        Request request = new Request(body, userId);
         geoFire.setLocation(key, new GeoLocation(currentLat, currentLong));
         Map<String, Object> postValues = request.toMap();
         Map<String, Object> childUpdates = new HashMap<>();

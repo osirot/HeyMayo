@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -10,25 +11,15 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
-
-    </android.support.v4.view.ViewPager>
+        tools:context=".MapsActivity"
+        tools:layout="@layout/dummy_mapview_fragment" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/viewPager"
+        android:layout_alignStart="@+id/request_cardview_fragment"
         android:layout_marginTop="16dp"
         android:clickable="true"
         android:focusable="true"
@@ -59,5 +50,17 @@
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_navigation_check_24"
         android:visibility="invisible" />
+
+    <fragment
+        android:id="@+id/request_cardview_fragment"
+        android:name="com.example.daniel.heymayo.fragments.RequestFragment"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        tools:layout="@layout/fragment_request" />
 
 </RelativeLayout>
