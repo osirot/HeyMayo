@@ -61,6 +61,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseReference mDatabase;
     private ImageView starView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
