@@ -34,4 +34,30 @@
         android:focusable="true"
         app:srcCompat="@drawable/appicon57x57" />
 
+    <EditText
+        android:id="@+id/new_Post"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="8dp"
+        android:layout_margin="10dp"
+        android:paddingLeft="25dp"
+        android:hint="@string/request"
+        android:inputType="textMultiLine"
+        android:maxLines="5"
+        android:background="@drawable/blue_square_radient"
+        android:visibility="invisible" />
+
+    <!-- this is used to submit a new post. it is set to invisible until fab_post is clicked-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/new_Post"
+        android:layout_margin="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_navigation_check_24"
+        android:visibility="invisible" />
+
 </RelativeLayout>

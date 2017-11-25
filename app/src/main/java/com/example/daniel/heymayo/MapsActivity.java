@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.fragments.RequestFragment;
@@ -39,6 +40,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
 
+    private FloatingActionButton FABcreateNewPost;
+    private FloatingActionButton FABsubmitPost;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,16 +51,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         final Intent postRequest = new Intent(this, RequestPostActivity.class);
-        // will reuse the button code later
-        firebaseButton = (FloatingActionButton) findViewById(R.id.fab_post);
-        firebaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.getParent();
-                startActivity(postRequest);
-                //finish();
-            }
-        });
 
         //connect to google services
         createGoogleApiClient();
@@ -74,6 +68,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mViewPager = findViewById(R.id.viewPager);
         // this sets the above adapter to the view pager
         mViewPager.setAdapter(mPagerAdapter);
+
+
+        //instantiate FAB buttons
+        FABcreateNewPost = findViewById(R.id.fab_post);
+        FABsubmitPost = findViewById(R.id.fab_submit_request);
+
+        FABcreateNewPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.getParent();
+                EditText newHelpRequest = findViewById(R.id.new_Post);
+                // make createNewPost FAb invisible
+                FABcreateNewPost.setVisibility(View.INVISIBLE);
+
+                startActivity(postRequest);
+                finish();
+
+                //when button is clicked make edit text and submitFAb visible
+                newHelpRequest.setVisibility(View.VISIBLE);
+                FABsubmitPost.setVisibility(View.VISIBLE);
+
+                //after submit is pressed make edit text invisible,
+                // also make other fab button invisible
+                // and FAB reappear by setting visible
+
+            }
+        });
     }
 
     // deprecated; called in MainActivity
@@ -90,7 +111,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (SecurityException e){
             Log.e("Exception: %s", e.getMessage());
         }
-
     }
 
     /**

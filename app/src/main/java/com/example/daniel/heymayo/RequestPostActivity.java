@@ -2,6 +2,7 @@ package com.example.daniel.heymayo;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestPostActivity extends SignInActivity {
+public class RequestPostActivity extends AppCompatActivity {
 
     private static final String TAG = "RequestPostActivity";
     private static final String REQUIRED = "Required";
@@ -46,6 +47,7 @@ public class RequestPostActivity extends SignInActivity {
             public void onClick(View v) {
                 submitPost();
                 mBodyField.getText().clear();
+                finish();
             }
         });
 /*
