@@ -1,5 +1,6 @@
 package com.example.daniel.heymayo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,10 +15,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class SignInActivity extends MainActivity {
 
     private static final String TAG = "AnonymousAuth";
+    private ProgressDialog mProgressDialog;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -48,7 +51,7 @@ public class SignInActivity extends MainActivity {
 
     private void onAuthSuccess() {
         startActivity(new Intent(SignInActivity.this, MapsActivity.class));
-        Log.d(TAG, "Auth successful, starting RequestPostActivity");
+        Log.d(TAG, "Auth successful, starting RequestFragment");
         finish();
     }
 
@@ -77,6 +80,26 @@ public class SignInActivity extends MainActivity {
         User user = new User(userId, token);
         mDatabase.child("users").child(userId).setValue(user);
         Log.d(TAG, "Saving user ID " + userId + " to database");
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public String getToken() {
+        return FirebaseInstanceId.getInstance().getToken();
     }
 
     // do not use except for testing

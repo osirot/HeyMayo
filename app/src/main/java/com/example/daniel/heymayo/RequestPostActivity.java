@@ -6,8 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.models.Request;
+import com.example.daniel.heymayo.models.Time;
 import com.example.daniel.heymayo.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -34,7 +34,7 @@ import com.google.firebase.FirebaseOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestPostActivity extends BaseActivity {
+public class RequestPostActivity extends AppCompatActivity {
 
     private static final String TAG = "RequestPostActivity";
     private static final String REQUIRED = "Required";
@@ -50,7 +50,7 @@ public class RequestPostActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_requests);
+        setContentView(R.layout.activity_request_post);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mBodyField = (EditText) findViewById(R.id.field_body);
@@ -61,6 +61,7 @@ public class RequestPostActivity extends BaseActivity {
             public void onClick(View v) {
                 submitPost();
                 mBodyField.getText().clear();
+                finish();
             }
         });
 /*
@@ -88,6 +89,8 @@ public class RequestPostActivity extends BaseActivity {
 
     private void submitPost() {
         final String body = mBodyField.getText().toString();
+        final String userId = getUid();
+        final long timestamp = Time.getUnixTime();
         if (TextUtils.isEmpty(body)) {
             mBodyField.setError(REQUIRED);
             return;
@@ -95,7 +98,7 @@ public class RequestPostActivity extends BaseActivity {
 
         setEditingEnabled(false);
         Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-        final String userId = getUid();
+
         // addValueEventListener continually checks view for changes
         mDatabase.child("users").child(userId).addValueEventListener(
                 new ValueEventListener() {
@@ -108,7 +111,7 @@ public class RequestPostActivity extends BaseActivity {
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            writeNewRequest(userId, body);
+                            writeNewRequest(userId, body, timestamp);
                         }
                         setEditingEnabled(true);
                     }
@@ -146,6 +149,11 @@ public class RequestPostActivity extends BaseActivity {
         childUpdates.put("/user-posts/" + userId + "/requests/" + key, postValues);
         mDatabase.updateChildren(childUpdates);
     }
+
+    public String getUid() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
 
     //deprecated - not needed (no menu bar)
 /*

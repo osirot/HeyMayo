@@ -38,13 +38,13 @@
         </activity>
         <activity
             android:name=".RequestPostActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MapsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".MapsActivity" />
         </activity>
         <activity
-            android:name=".ReplyPostActivity"
+            android:name=".ReplyActivity"
             android:parentActivityName=".RequestPostActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

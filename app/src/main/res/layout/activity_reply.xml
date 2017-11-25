@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
-        layout="@layout/item_request"
+        layout="@layout/item_request_fragment"
         android:id="@+id/requestor_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,15 +26,15 @@
             android:padding="10dp">
 
             <include
-                android:id="@+id/post_author_layout"
-                layout="@layout/include_request_author"
+                android:id="@+id/post_timestamp_layout"
+                layout="@layout/include_time_stamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <include layout="@layout/include_request_text"
+            <include layout="@layout/include_body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/post_author_layout"
+                android:layout_below="@+id/post_timestamp_layout"
                 android:layout_marginTop="10dp"
                 android:id="@+id/include" />
 
@@ -46,7 +46,7 @@
         android:id="@+id/recycler_replies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_reply"
+        tools:listitem="@layout/item_reply_not_user"
         android:layout_below="@id/requestor_card"
         android:layout_above="@id/reply_form"
         android:layout_alignParentStart="true"

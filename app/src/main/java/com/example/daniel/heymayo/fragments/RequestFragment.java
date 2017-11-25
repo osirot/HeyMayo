@@ -10,33 +10,35 @@ import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.example.daniel.heymayo.PostViewHolder;
 import com.example.daniel.heymayo.R;
-import com.example.daniel.heymayo.ReplyPostActivity;
+import com.example.daniel.heymayo.ReplyActivity;
 import com.example.daniel.heymayo.models.Request;
+import com.example.daniel.heymayo.models.Time;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class PostListFragment extends Fragment {
+public class RequestFragment extends Fragment {
 
-    private static final String TAG = "PostListFragment";
+    private static final String TAG = "RequestFragment";
 
     private DatabaseReference mDatabase;
     private FirebaseRecyclerAdapter<Request, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
-    public PostListFragment() {}
+
+    public RequestFragment() {}
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_all_requests, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_request, container, false);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -69,7 +71,7 @@ public class PostListFragment extends Fragment {
             @Override
             public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                return new PostViewHolder(inflater.inflate(R.layout.item_request, viewGroup, false));
+                return new PostViewHolder(inflater.inflate(R.layout.item_request_fragment, viewGroup, false));
             }
 
             @Override
@@ -84,8 +86,8 @@ public class PostListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         // Launch PostDetailActivity
-                        Intent intent = new Intent(getActivity(), ReplyPostActivity.class);
-                        intent.putExtra(ReplyPostActivity.EXTRA_POST_KEY, postKey);
+                        Intent intent = new Intent(getActivity(), ReplyActivity.class);
+                        intent.putExtra(ReplyActivity.EXTRA_POST_KEY, postKey); //
                         startActivity(intent);
                     }
                 });
@@ -97,14 +99,11 @@ public class PostListFragment extends Fragment {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
                 int friendlyMessageCount = mAdapter.getItemCount();
-                int lastVisiblePosition =
-                        mManager.findLastCompletelyVisibleItemPosition();
+                int lastVisiblePosition = mManager.findLastCompletelyVisibleItemPosition();
                 // If the recycler view is initially being loaded or the
                 // user is at the bottom of the list, scroll to the bottom
                 // of the list to show the newly added message.
-                if (lastVisiblePosition == -1 ||
-                        (positionStart >= (friendlyMessageCount - 1) &&
-                                lastVisiblePosition == (positionStart - 1))) {
+                if (lastVisiblePosition == -1 || (positionStart >= (friendlyMessageCount - 1) && lastVisiblePosition == (positionStart - 1))) {
                     mManager.scrollToPosition(positionStart);
                 }
             }
@@ -130,6 +129,33 @@ public class PostListFragment extends Fragment {
 
     public Query getQuery(DatabaseReference databaseReference) {
         return databaseReference.child("requests");
+    }
+
+    private class PostViewHolder extends RecyclerView.ViewHolder {
+
+        //public TextView titleView;
+        //public TextView authorView;
+        //public TextView userId;
+        public TextView bodyView;
+        public TextView timeStamp;
+
+        public PostViewHolder(View itemView) {
+            super(itemView);
+
+            //titleView = itemView.findViewById(R.id.post_title);
+            //authorView = itemView.findViewById(R.id.post_author);
+            //userId = itemView.findViewById(R.id.post_author);
+            bodyView = itemView.findViewById(R.id.include_body);
+            timeStamp = itemView.findViewById(R.id.request_time);
+        }
+
+        public void bindToPost(Request request) {
+            //titleView.setText(request.title);
+            //authorView.setText(request.author);
+            //userId.setText(request.uid);
+            bodyView.setText(request.body);
+            timeStamp.setText(Time.formatDateTime(request.timestamp));
+        }
     }
 
 }
