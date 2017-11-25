@@ -139,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             startLocationUpdates();
         } else{
             myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            mMap.setMinZoomPreference(15);
+            mMap.setMinZoomPreference(17);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
             this.searchCircle = this.mMap.addCircle(new CircleOptions().center(myLocation).radius(200));
             this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
