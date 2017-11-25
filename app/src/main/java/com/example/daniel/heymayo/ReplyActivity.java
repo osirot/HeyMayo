@@ -24,6 +24,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -249,67 +251,50 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    private void onStarClicked(final Reply reply, final DatabaseReference postRef) {
+    private void onStarClicked(final Reply reply, final DatabaseReference postRef, final String replyKey) {
 
         // Need to write to both places the post is stored
-        final DatabaseReference globalPostRef = mDatabase.child("replies").child(postRef.getKey());
-        final DatabaseReference userPostRef = mDatabase.child("user-posts").child(reply.uid).child("replies").child(postRef.getKey());
+        final DatabaseReference globalPostRef = mDatabase.child("replies").child(postRef.getKey()).child(replyKey);
+        final DatabaseReference userPostRef = mDatabase.child("user-posts").child(reply.uid).child("replies").child(postRef.getKey()).child(replyKey);
         // location of where points count is kept
         final DatabaseReference userCount = mDatabase.child("users").child(reply.uid);
 
-        Log.d("postRef", "" + postRef);
-        Log.d("globalPostRef:", "" + globalPostRef.getKey());
-        Log.d("userPostRef:", "" + userPostRef.getKey());
-        Log.d("userCount:", "" + userCount);
-        //Log.d("Reply Data:", reply.body + " " + reply.uid + " " + reply.timestamp + " " + reply.karma);
+        //Log.d("karma:", "" + reply.karma);
+        if (reply.karma) {
+            globalPostRef.child("karma").setValue(false);
+            userPostRef.child("karma").setValue(false);
+            updateKarmaPoints(userCount, false);
+        } else {
+            globalPostRef.child("karma").setValue(true);
+            userPostRef.child("karma").setValue(true);
+            updateKarmaPoints(userCount, true);
+        }
 
-        globalPostRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Reply requestReply = dataSnapshot.getValue(Reply.class);
-                Log.d("Value is", "" + requestReply.karma);
-                requestReply.updateKarma(true);
-                //globalPostRef.child().setValue(true);
-            }
+        //Log.d("postRef:", "" + postRef);
+        //Log.d("globalPostRef:", "" + globalPostRef);
+        //Log.d("userPostRef:", "" + userPostRef);
+        //Log.d("userCount:", "" + userCount);
+    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+    private void updateKarmaPoints(DatabaseReference postRef, final Boolean karma) {
 
-            }
-        });
-        userPostRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Reply userPostReply = dataSnapshot.getValue(Reply.class);
-                Log.d("Value is", "" + userPostReply.karma);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        /*postRef.runTransaction(new Transaction.Handler() {
+        postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Reply p = mutableData.getValue(Reply.class);
-                if (p == null) {
+                User u = mutableData.getValue(User.class);
+                if (u == null) {
                     return Transaction.success(mutableData);
                 }
-
-                if (p.stars.containsKey(getUid())) {
-                    // Unstar the post and remove self from stars
-                    p.starCount = p.starCount - 1;
-                    p.stars.remove(getUid());
+                // if the user has karma, add 1 to karmaPoints
+                if (karma) {
+                    u.karmaPoints = u.karmaPoints + 1;
+                // else, subtract 1 from karma points (assumes being taken away)
                 } else {
-                    // Star the post and add self to stars
-                    p.starCount = p.starCount + 1;
-                    p.stars.put(getUid(), true);
+                    u.karmaPoints = u.karmaPoints - 1;
                 }
 
                 // Set value and report transaction success
-                mutableData.setValue(p);
+                mutableData.setValue(u);
                 return Transaction.success(mutableData);
             }
 
@@ -319,11 +304,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 // Transaction completed
                 Log.d(TAG, "postTransaction:onComplete:" + databaseError);
             }
-        });*/
-    }
-
-    private void updateKarmaPoints(DatabaseReference postRef) {
-        Log.d("updateKarmaPoints:", "" + postRef);
+        });
     }
 
 /*
@@ -421,12 +402,12 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-                    Log.d(TAG, "TEST DEBUG:" + ref);
-                    Log.d(TAG, "TestOutput:" + dataSnapshot.getKey());
+                    //Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                    //Log.d(TAG, "TEST DEBUG:" + ref);
+                    //Log.d(TAG, "reply post key:" + dataSnapshot.getKey());
                     // A new reply has been added, add it to the displayed list
                     Reply reply = dataSnapshot.getValue(Reply.class);
-
+                    //Log.d(TAG,"onChildAdded-reply:" + reply.karma);
                     // Update RecyclerView
                     mReplyIds.add(dataSnapshot.getKey());
                     //Log.d(TAG,"TESTOUTPUT:" + dataSnapshot.getKey());
@@ -443,7 +424,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                     // reply and if so displayed the changed reply.
                     Reply newReply = dataSnapshot.getValue(Reply.class);
                     String replyKey = dataSnapshot.getKey();
-
+                    //Log.d(TAG,"onChildChanged:newReply:" + newReply.karma);
                     int ReplyIndex = mReplyIds.indexOf(replyKey);
                     //Log.d(TAG,"TESTOUTPUT:" + ReplyIndex);
                     if (ReplyIndex > -1) {
@@ -504,12 +485,11 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 holder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
             }
-
             // Bind Post to ViewHolder, setting OnClickListener for the star button
             holder.bindToPost(model, new View.OnClickListener() {
                 @Override
                 public void onClick(View starView) {
-                    onStarClicked(model, postRef);
+                    onStarClicked(model, postRef, mReplyIds.get(position));
                 }
             });
         }

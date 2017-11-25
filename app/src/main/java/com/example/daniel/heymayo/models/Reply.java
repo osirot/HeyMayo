@@ -26,14 +26,6 @@ public class Reply {
         this.timestamp = timestamp;
     }
 
-    public Reply(String uid, String body, long timestamp, Boolean karma) {
-        this.uid = uid;
-        this.body = body;
-        this.timestamp = timestamp;
-        this.karma = karma;
-    }
-
-
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -50,7 +42,4 @@ public class Reply {
         return this.timestamp;
     }
 
-    public void updateKarma(Boolean karma) {
-        this.karma = karma;
-    }
 }
