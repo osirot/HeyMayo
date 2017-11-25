@@ -10,21 +10,22 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/darkgreen_square_raient"
         android:padding="10dp">
 
         <LinearLayout
+            android:id="@+id/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/top_bar">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/requestor_reply_time"
-                android:text="11/19/2017 12:36:00 AM"
                 android:layout_width="0dp"
                 android:layout_height="24dp"
-                android:gravity="center|start"
                 android:layout_weight="10"
+                android:gravity="center|start"
+                android:text="11/19/2017 12:36:00 AM"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -33,9 +34,9 @@
         <TextView
             android:id="@+id/requestor_reply_body"
             style="@style/TextAppearance.AppCompat.Small"
-            android:layout_below="@+id/top_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/top_bar"
             android:padding="4dp"
             tools:text="@string/lorem" />
 

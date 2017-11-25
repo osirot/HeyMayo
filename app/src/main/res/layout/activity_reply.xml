@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/blue_background">
 
     <android.support.v7.widget.CardView
         layout="@layout/item_request_fragment"
@@ -18,11 +19,13 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         card_view:cardCornerRadius="8dp"
-        card_view:cardElevation="16dp">
+        card_view:cardElevation="16dp"
+        android:background="@drawable/redorange_square_radient">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/redorange_square_radient"
             android:padding="10dp">
 
             <include
@@ -31,12 +34,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <include layout="@layout/include_body"
+            <include
+                android:id="@+id/include"
+                layout="@layout/include_body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/post_timestamp_layout"
-                android:layout_marginTop="10dp"
-                android:id="@+id/include" />
+                android:layout_marginTop="10dp" />
 
         </RelativeLayout>
 
