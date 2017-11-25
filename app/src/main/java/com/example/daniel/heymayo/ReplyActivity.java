@@ -189,7 +189,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     private void postReply() {
         final String body = mReplyField.getText().toString();
         final String userId = getUid();
-        final long timestamp = Time.getUnixTime();
 
         if (TextUtils.isEmpty(body)) {
             mReplyField.setError(REQUIRED);
@@ -213,7 +212,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                                     Toast.LENGTH_SHORT).show();
                         } else {
 
-                            writeNewReply(userId, body, timestamp);
+                            writeNewReply(userId, body);
                             mReplyField.setText(null);
                         }
                         setEditingEnabled(true);
@@ -238,9 +237,9 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
     }
 
     // writes new replies to database
-    private void writeNewReply(String userId, String body, long unixTime) {
+    private void writeNewReply(String userId, String body) {
         String key = mReplyReference.push().getKey();
-        Reply reply = new Reply(userId, body, unixTime);
+        Reply reply = new Reply(userId, body);
         Map<String, Object> postValues = reply.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/replies/" + mPostKey + "/" + key, postValues);

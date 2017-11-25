@@ -132,27 +132,16 @@ public class RequestFragment extends Fragment {
     }
 
     private class PostViewHolder extends RecyclerView.ViewHolder {
-
-        //public TextView titleView;
-        //public TextView authorView;
-        //public TextView userId;
         public TextView bodyView;
         public TextView timeStamp;
 
         public PostViewHolder(View itemView) {
             super(itemView);
-
-            //titleView = itemView.findViewById(R.id.post_title);
-            //authorView = itemView.findViewById(R.id.post_author);
-            //userId = itemView.findViewById(R.id.post_author);
             bodyView = itemView.findViewById(R.id.include_body);
             timeStamp = itemView.findViewById(R.id.request_time);
         }
 
         public void bindToPost(Request request) {
-            //titleView.setText(request.title);
-            //authorView.setText(request.author);
-            //userId.setText(request.uid);
             bodyView.setText(request.body);
             timeStamp.setText(Time.formatDateTime(request.timestamp));
         }

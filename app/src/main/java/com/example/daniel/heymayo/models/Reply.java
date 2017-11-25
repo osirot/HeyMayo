@@ -3,6 +3,7 @@ package com.example.daniel.heymayo.models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.PropertyName;
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,11 @@ public class Reply {
 
     public Reply() {}
 
+    public Reply(String uid, String body) {
+        this.uid = uid;
+        this.body = body;
+    }
+
     public Reply(String uid, String body, long timestamp) {
         this.uid = uid;
         this.body = body;
@@ -31,7 +37,7 @@ public class Reply {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("body", body);
-        result.put("timestamp", timestamp);
+        result.put("timestamp", ServerValue.TIMESTAMP);
         result.put("karma", karma);
 
         return result;

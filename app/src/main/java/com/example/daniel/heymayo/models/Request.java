@@ -16,6 +16,11 @@ public class Request {
 
     public Request() {}
 
+    public Request(String body, String uid) {
+        this.uid = uid;
+        this.body = body;
+    }
+
     public Request(String body, String uid, long timestamp) {
         this.uid = uid;
         this.body = body;
@@ -27,7 +32,7 @@ public class Request {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("body", body);
-        result.put("timestamp", timestamp);
+        result.put("timestamp", ServerValue.TIMESTAMP);
 
         return result;
     }

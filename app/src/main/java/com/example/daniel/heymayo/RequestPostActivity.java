@@ -60,7 +60,6 @@ public class RequestPostActivity extends AppCompatActivity {
     private void submitPost() {
         final String body = mBodyField.getText().toString();
         final String userId = getUid();
-        final long timestamp = Time.getUnixTime();
         if (TextUtils.isEmpty(body)) {
             mBodyField.setError(REQUIRED);
             return;
@@ -81,7 +80,7 @@ public class RequestPostActivity extends AppCompatActivity {
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            writeNewRequest(userId, body, timestamp);
+                            writeNewRequest(userId, body);
                         }
                         setEditingEnabled(true);
                     }
@@ -103,14 +102,14 @@ public class RequestPostActivity extends AppCompatActivity {
         }
     }
 
-    private void writeNewRequest(String userId, String body, long timeStamp) {
+    private void writeNewRequest(String userId, String body) {
 
         SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Double currentLat = Double.parseDouble(locationPrefs.getString("Latitude", "None"));
         Double currentLong = Double.parseDouble(locationPrefs.getString("Longitude", "None"));
         this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_DB + "locations"));
         String key = mDatabase.child("requests").push().getKey();
-        Request request = new Request(body, userId, timeStamp);
+        Request request = new Request(body, userId);
         geoFire.setLocation(key, new GeoLocation(currentLat, currentLong));
         Map<String, Object> postValues = request.toMap();
         Map<String, Object> childUpdates = new HashMap<>();

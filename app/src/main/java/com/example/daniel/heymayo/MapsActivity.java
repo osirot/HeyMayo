@@ -1,6 +1,5 @@
 package com.example.daniel.heymayo;
 
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -44,16 +43,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
-
     private FloatingActionButton firebaseButton;
-
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     private static final String TAG = "MapsActivity";
+
     //for geoFire
     private LatLng myLocation;
     private Circle searchCircle;
@@ -62,7 +59,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Map<String,Marker> markers;
     private static final String GEO_FIRE_DB = "https://heymayo-test.firebaseio.com/";
     private static final String GEO_FIRE_REF = GEO_FIRE_DB + "locations";
-
     private FloatingActionButton FABcreateNewPost;
     private FloatingActionButton FABsubmitPost;
 
