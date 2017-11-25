@@ -133,7 +133,7 @@ public class RequestPostActivity extends AppCompatActivity {
         }
     }
 
-    private void writeNewRequest(String userId, String body) {
+    private void writeNewRequest(String userId, String body, long timeStamp) {
 
         SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Double currentLat = Double.parseDouble(locationPrefs.getString("Latitude", "None"));
@@ -141,7 +141,7 @@ public class RequestPostActivity extends AppCompatActivity {
         this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_DB + "locations"));
 
         String key = mDatabase.child("requests").push().getKey();
-        Request request = new Request(body, userId);
+        Request request = new Request(body, userId, timeStamp);
         geoFire.setLocation(key, new GeoLocation(currentLat, currentLong));
         Map<String, Object> postValues = request.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
