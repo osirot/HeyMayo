@@ -88,6 +88,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
 
         mReplyButton.setOnClickListener(this);
         mReplyRecycler.setLayoutManager(new LinearLayoutManager(this));
+
         // keeping the following code because we may need it later
 /*      // creates a listener attached to recyclerView that activates when an element in the
         // recyclerView is touched or long touched
@@ -175,6 +176,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         mAdapter.cleanupListener();
     }
 
+    // onClick method for the reply button
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -183,6 +185,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // handles all the steps in submitting a reply to db/client
     private void postReply() {
         final String body = mReplyField.getText().toString();
         final String userId = getUid();
@@ -224,6 +227,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+    // temporarily makes submit button invisible to prevent spamming replies
     private void setEditingEnabled(boolean enabled) {
         mReplyField.setEnabled(enabled);
         if (enabled) {
@@ -233,6 +237,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // writes new replies to database
     private void writeNewReply(String userId, String body, long unixTime) {
         String key = mReplyReference.push().getKey();
         Reply reply = new Reply(userId, body, unixTime);
@@ -243,12 +248,13 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }
 
+    // gets the id of the user
     private String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-
-    private void onStarClicked(final Reply reply, final DatabaseReference postRef, final String replyKey) {
+    // this class handles setting the karma point flag in replies and calls updateKarmaPoints to apply points to user
+    private void onKarmaClicked(final Reply reply, final DatabaseReference postRef, final String replyKey) {
 
         // set a flag in both of these places to indicate karma points given
         final DatabaseReference globalPostRef = mDatabase.child("replies").child(postRef.getKey()).child(replyKey);
@@ -306,30 +312,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-/*
-
-    //custom view holder static class
-    private static class ReplyViewHolder extends RecyclerView.ViewHolder {
-
-        //public TextView authorView;
-        public TextView bodyView;
-        public TextView timeStamp;
-
-        public ReplyViewHolder(View itemView) {
-            super(itemView);
-            //authorView = itemView.findViewById(R.id.reply_author);
-            bodyView = itemView.findViewById(R.id.reply_body);
-            timeStamp = itemView.findViewById(R.id.reply_time);
-        }
-
-        public void bind(Reply reply) {
-            //authorView.setText(reply.uid);
-            bodyView.setText(reply.body);
-            timeStamp.setText(Time.formatDateTime(reply.timeStamp));
-        }
-    }*/
-
-    //custom view holder static class
+    // this view holder is for posts made by the user (person holding the phone)
     private static class UserViewHolder extends RecyclerView.ViewHolder {
 
         public TextView bodyView;
@@ -346,8 +329,8 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
            timeStamp.setText(Time.formatDateTime(reply.timestamp));
         }
     }
-
-    public class NotUserPostViewHolder extends RecyclerView.ViewHolder {
+    // this view holder is for posts made by others
+    public static class NotUserPostViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView starView;
         public TextView bodyView;
@@ -367,7 +350,8 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    //custom adapter class
+    //custom adapter class that handles getting info from firebase, determining if userID matches
+    // this user's id, and routes to different view holders based on that info
     private class ReplyAdapter extends RecyclerView.Adapter {
 
         private static final int VIEW_TYPE_MESSAGE_SENT = 1;
@@ -457,9 +441,6 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 return new NotUserPostViewHolder(view);
             }
             return null;
-
-            //LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            //return new NotUserPostViewHolder(inflater.inflate(R.layout.item_reply_not_user, parent, false));
         }
 
         @Override
@@ -487,7 +468,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                     ((NotUserPostViewHolder) holder).bindToPost(model, new View.OnClickListener() {
                         @Override
                         public void onClick(View starView) {
-                            onStarClicked(model, postRef, mReplyIds.get(position));
+                            onKarmaClicked(model, postRef, mReplyIds.get(position));
                         }
                     });
                     //Log.d("viewHolder:", "not you");
@@ -504,7 +485,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
         public int getItemViewType(int position) {
             Reply reply = mReplies.get(position);
             String userID = getUid();
-            // checks if message is from your or someone else
+            // checks if message is from you or someone else
             if (reply.uid.equals(userID)) {
                 return VIEW_TYPE_MESSAGE_SENT;
             } else {
