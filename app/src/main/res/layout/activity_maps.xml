@@ -11,7 +11,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity"
+        tools:context=".fragments.MapFragment"
         tools:layout="@layout/dummy_mapview_fragment" />
 
     <android.support.design.widget.FloatingActionButton
@@ -31,7 +31,7 @@
         android:layout_height="100dp"
         android:padding="8dp"
         android:layout_margin="10dp"
-        android:paddingLeft="25dp"
+        android:paddingStart="25dp"
         android:hint="@string/request"
         android:inputType="textMultiLine"
         android:maxLines="5"

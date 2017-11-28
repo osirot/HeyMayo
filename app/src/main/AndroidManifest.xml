@@ -29,7 +29,7 @@
         -->
         <activity android:name=".IntroActivity" />
         <activity
-            android:name=".MapsActivity"
+            android:name=".fragments.MapFragment"
             android:label="@string/title_activity_maps"
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -37,20 +37,19 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".RequestPostActivity"
-            android:parentActivityName=".MapsActivity">
+            android:name=".RequestActivity"
+            android:parentActivityName=".fragments.MapFragment">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MapsActivity" />
+                android:value=".fragments.MapFragment" />
         </activity>
         <activity
             android:name=".ReplyActivity"
-            android:parentActivityName=".RequestPostActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RequestPostActivity" />
+                android:value=".MainActivity" />
         </activity>
-        <activity android:name=".SignInActivity" />
     </application>
 
 </manifest>

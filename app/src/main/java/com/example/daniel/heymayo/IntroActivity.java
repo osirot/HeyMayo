@@ -12,6 +12,7 @@ import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.daniel.heymayo.fragments.IntroSlideFragment;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,10 +33,10 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         super.onCreate(savedInstanceState);
 
         //default slides from AppIntro
-        addSlide(SampleSlide.newInstance(R.layout.slide_1));
-        addSlide(SampleSlide.newInstance(R.layout.slide_2));
-        addSlide(SampleSlide.newInstance(R.layout.slide_3));
-        addSlide(SampleSlide.newInstance(R.layout.slide_4));
+        addSlide(IntroSlideFragment.newInstance(R.layout.slide_1));
+        addSlide(IntroSlideFragment.newInstance(R.layout.slide_2));
+        addSlide(IntroSlideFragment.newInstance(R.layout.slide_3));
+        addSlide(IntroSlideFragment.newInstance(R.layout.slide_4));
 
         //you can control skip button with this. true or false method
         showSkipButton(false);
@@ -71,14 +72,14 @@ public class IntroActivity extends AppIntro implements GoogleApiClient.Connectio
         }
     }
 
-    //if permission is granted we switch to MapsActivity, if not toast says Need your location
+    //if permission is granted we switch to MapFragment, if not toast says Need your location
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // All good!
-                    Intent goToMap = new Intent(this, MainActivity.class); //MapsActivity.class);
+                    Intent goToMap = new Intent(this, MainActivity.class); //MapFragment.class);
                     startActivity(goToMap);
                 } else {
                     Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show();
