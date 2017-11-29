@@ -83,7 +83,6 @@ public class MapFragment extends FragmentActivity implements OnMapReadyCallback,
                 FABcreateNewPost.setVisibility(View.INVISIBLE);
 
                 startActivity(postRequest);
-                finish();
 
                 //when button is clicked make edit text and submitFAb visible
                 newHelpRequest.setVisibility(View.VISIBLE);
@@ -95,12 +94,6 @@ public class MapFragment extends FragmentActivity implements OnMapReadyCallback,
 
             }
         });
-    }
-
-    // deprecated; called in MainActivity
-    public void postActivity(View view) {
-        Intent intent = new Intent(this, RequestActivity.class);
-        startActivity(intent);
     }
 
     @Override

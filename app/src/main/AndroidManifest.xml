@@ -38,10 +38,10 @@
         </activity>
         <activity
             android:name=".RequestActivity"
-            android:parentActivityName=".fragments.MapFragment">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".fragments.MapFragment" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".ReplyActivity"

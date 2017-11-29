@@ -65,8 +65,7 @@ public class RequestActivity extends AppCompatActivity {
         }
 
         setEditingEnabled(false);
-        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
         // addValueEventListener continually checks view for changes
         mDatabase.child("users").child(userId).addValueEventListener(
                 new ValueEventListener() {
