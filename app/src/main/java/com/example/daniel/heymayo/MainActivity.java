@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         if (user != null) {
             // signed in, moving on to next activity
-            //writeNewUser(user.getUid(), getToken());
+            writeNewUser(user.getUid(), getToken());
             onAuthSuccess();
             Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
         } else {
