@@ -1,4 +1,4 @@
-package com.example.daniel.heymayo;
+package com.example.daniel.heymayo.fragments;
 
 /**
  * Created by kipta on 10/13/2017.
@@ -11,19 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SampleSlide extends Fragment {
+public class IntroSlideFragment extends Fragment {
 
     private static final String ARG_LAYOUT_RES_ID = "layoutResId";
     private int layoutResId;
 
-    public static SampleSlide newInstance(int layoutResId) {
-        SampleSlide sampleSlide = new SampleSlide();
+    public static IntroSlideFragment newInstance(int layoutResId) {
+        IntroSlideFragment introSlideFragment = new IntroSlideFragment();
 
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT_RES_ID, layoutResId);
-        sampleSlide.setArguments(args);
+        introSlideFragment.setArguments(args);
 
-        return sampleSlide;
+        return introSlideFragment;
     }
 
     @Override

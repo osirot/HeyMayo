@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daniel.heymayo.models.Request;
-import com.example.daniel.heymayo.models.Time;
 import com.example.daniel.heymayo.models.User;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -27,9 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestPostActivity extends AppCompatActivity {
+public class RequestActivity extends AppCompatActivity {
 
-    private static final String TAG = "RequestPostActivity";
+    private static final String TAG = "RequestActivity";
     private static final String REQUIRED = "Required";
     private DatabaseReference mDatabase;
     private EditText mBodyField;
@@ -66,8 +65,7 @@ public class RequestPostActivity extends AppCompatActivity {
         }
 
         setEditingEnabled(false);
-        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
         // addValueEventListener continually checks view for changes
         mDatabase.child("users").child(userId).addValueEventListener(
                 new ValueEventListener() {
@@ -76,7 +74,7 @@ public class RequestPostActivity extends AppCompatActivity {
                         User user = dataSnapshot.getValue(User.class);
                         if (user == null) {
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(RequestPostActivity.this,
+                            Toast.makeText(RequestActivity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
@@ -103,7 +101,6 @@ public class RequestPostActivity extends AppCompatActivity {
     }
 
     private void writeNewRequest(String userId, String body) {
-
         SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Double currentLat = Double.parseDouble(locationPrefs.getString("Latitude", "None"));
         Double currentLong = Double.parseDouble(locationPrefs.getString("Longitude", "None"));
@@ -121,27 +118,4 @@ public class RequestPostActivity extends AppCompatActivity {
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
-
-
-    //deprecated - not needed (no menu bar)
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_logout) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-*/
 }

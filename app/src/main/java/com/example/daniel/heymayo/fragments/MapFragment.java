@@ -1,4 +1,4 @@
-package com.example.daniel.heymayo;
+package com.example.daniel.heymayo.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,16 +7,14 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.daniel.heymayo.fragments.RequestFragment;
+import com.example.daniel.heymayo.R;
+import com.example.daniel.heymayo.RequestActivity;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -39,14 +37,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+public class MapFragment extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private static final String TAG = "MapsActivity";
+    private static final String TAG = "MapFragment";
 
     //for geoFire
     private LatLng myLocation;
@@ -66,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        final Intent postRequest = new Intent(this, RequestPostActivity.class);
+        final Intent postRequest = new Intent(this, RequestActivity.class);
 
         //connect to google services
         createGoogleApiClient();
@@ -85,7 +83,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 FABcreateNewPost.setVisibility(View.INVISIBLE);
 
                 startActivity(postRequest);
-                finish();
 
                 //when button is clicked make edit text and submitFAb visible
                 newHelpRequest.setVisibility(View.VISIBLE);
@@ -97,12 +94,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-    }
-
-    // deprecated; called in MainActivity
-    public void postActivity(View view) {
-        Intent intent = new Intent(this, RequestPostActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -142,8 +133,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMinZoomPreference(17);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
             this.searchCircle = this.mMap.addCircle(new CircleOptions().center(myLocation).radius(200));
-            this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
-            this.searchCircle.setStrokeColor(Color.argb(66, 0, 0, 0));
+            this.searchCircle.setFillColor(Color.argb(50, 255, 150, 100));
+            this.searchCircle.setStrokeColor(Color.argb(30, 0, 0, 0));
 
             this.geoFire = new GeoFire(FirebaseDatabase.getInstance(FirebaseApp.getInstance()).getReferenceFromUrl(GEO_FIRE_REF));
 
@@ -206,7 +197,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
-
     }
 
     @Override
@@ -218,7 +208,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-
     }
 
     @Override
