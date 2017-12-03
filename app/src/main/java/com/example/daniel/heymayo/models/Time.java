@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by jsayler on 11/19/17.
  *
@@ -28,7 +30,13 @@ public class Time {
         return localtime;
     }
 
+    // returns current time in milliseconds (unix time)
     public static long getUnixTime() {
         return System.currentTimeMillis();
+    }
+
+    // compares 2 unix timestamps and returns True if they are less than 60 minutes apart
+    public static Boolean withinTimeFrame(long currentTime, long requestTime) {
+        return (abs(currentTime - requestTime) / 60000) < 60;
     }
 }

@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import static com.example.daniel.heymayo.models.Time.getUnixTime;
+
 public class RequestFragment extends Fragment {
 
     private static final String TAG = "RequestFragment";
@@ -127,8 +129,12 @@ public class RequestFragment extends Fragment {
         }
     }
 
+    // queries DB at the requests node. orders all requests by timestamp, then it takes the current
+    // time in milliseconds and subtracts an hour (converted to ms) to determine which post
+    // to start getting. it then gets all posts beyond where it started (so it gets all posts less than
+    // or equal to an hour old)
     public Query getQuery(DatabaseReference databaseReference) {
-        return databaseReference.child("requests");
+        return databaseReference.child("requests").orderByChild("timestamp").startAt((getUnixTime() - 3600000));
     }
 
     private class PostViewHolder extends RecyclerView.ViewHolder {

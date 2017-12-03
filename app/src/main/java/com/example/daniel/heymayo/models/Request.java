@@ -13,6 +13,7 @@ public class Request {
     public String uid;
     public String body;
     public long timestamp;
+    public Boolean closed = false;
 
     public Request() {}
 
@@ -33,8 +34,7 @@ public class Request {
         result.put("uid", uid);
         result.put("body", body);
         result.put("timestamp", ServerValue.TIMESTAMP);
-
+        result.put("closed", closed);
         return result;
     }
 }
-
