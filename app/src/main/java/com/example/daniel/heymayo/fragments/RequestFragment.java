@@ -1,6 +1,7 @@
 package com.example.daniel.heymayo.fragments;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +33,7 @@ public class RequestFragment extends Fragment {
     private FirebaseRecyclerAdapter<Request, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
+    private Location latLon;
 
 
     public RequestFragment() {}
@@ -57,7 +59,7 @@ public class RequestFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        latLon = ((MapFragment) getActivity()).getLatLon();
         // Set up Layout Manager, reverse layout
         mManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, true);
         //mManager.setReverseLayout(true);

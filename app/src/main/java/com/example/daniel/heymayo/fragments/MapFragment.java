@@ -1,5 +1,6 @@
 package com.example.daniel.heymayo.fragments;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -104,6 +105,11 @@ public class MapFragment extends FragmentActivity implements OnMapReadyCallback,
         } catch (SecurityException e){
             Log.e("Exception: %s", e.getMessage());
         }
+
+        // starts the RequestFragment after map is connected - this is to avoid errors with getting location data
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.request_cardview_fragment, new RequestFragment());
+        ft.commit();
     }
 
     /**
@@ -222,5 +228,9 @@ public class MapFragment extends FragmentActivity implements OnMapReadyCallback,
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+    }
+
+    public Location getLatLon() {
+        return mLastLocation;
     }
 }
