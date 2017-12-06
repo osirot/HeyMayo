@@ -11,7 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/darkgreen_square_raient"
-        android:padding="10dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
 
         <LinearLayout
             android:id="@+id/top_bar"
@@ -26,6 +29,8 @@
                 android:layout_weight="10"
                 android:gravity="center|start"
                 android:text="11/19/2017 12:36:00 AM"
+                android:textAlignment="textEnd"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -38,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/top_bar"
             android:padding="4dp"
+            android:textSize="16sp"
             tools:text="@string/lorem" />
 
     </RelativeLayout>

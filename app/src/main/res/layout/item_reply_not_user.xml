@@ -10,7 +10,10 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:background="@drawable/darkgreen_square_raient">
 
         <LinearLayout
@@ -18,16 +21,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/top_bar">
-
-            <TextView
-                android:id="@+id/reply_time"
-                android:text="11/19/2017 12:36:00 AM"
-                android:layout_width="0dp"
-                android:layout_height="24dp"
-                android:gravity="center|start"
-                android:layout_weight="10"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/reply_star"
@@ -40,15 +33,27 @@
                 android:contentDescription="STAR"
                 tools:ignore="HardcodedText" />
 
+            <TextView
+                android:id="@+id/reply_time"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="10"
+                android:gravity="center|end"
+                android:text="11/19/2017 12:36:00 AM"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/reply_body"
             style="@style/TextAppearance.AppCompat.Small"
-            android:layout_below="@+id/top_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/top_bar"
             android:padding="4dp"
+            android:textSize="16sp"
             tools:text="@string/lorem" />
 
     </RelativeLayout>

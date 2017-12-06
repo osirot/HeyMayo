@@ -36,6 +36,9 @@ import java.util.Map;
 import com.example.daniel.heymayo.models.User;
 import com.example.daniel.heymayo.models.Request;
 
+import static com.example.daniel.heymayo.models.Time.getUnixTime;
+import static com.example.daniel.heymayo.models.Time.withinTimeFrame;
+
 /**
  * Created by jsayler on 11/5/17.
  */
@@ -143,6 +146,7 @@ public class ReplyActivity extends AppCompatActivity implements View.OnClickList
                 //mAuthorView.setText(post.uid);
                 mBodyView.setText(post.body);
                 mTimeStamp.setText(Time.formatDateTime(post.timestamp));
+                //Log.d("TIMESTAMP", "" + getUnixTime() + " " + withinTimeFrame(getUnixTime(), post.timestamp));
             }
 
             @Override

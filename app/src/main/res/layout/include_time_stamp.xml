@@ -7,9 +7,13 @@
 
     <TextView
         android:id="@+id/request_time"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        tools:text="11/19/2017 12:36:00 AM"/>
+        android:textAlignment="textEnd"
+        android:textAllCaps="false"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        tools:text="11/19/2017 12:36:00 AM" />
 
 </LinearLayout>
