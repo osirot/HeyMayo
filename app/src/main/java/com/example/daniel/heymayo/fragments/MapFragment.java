@@ -89,9 +89,12 @@ public class MapFragment extends FragmentActivity implements OnMapReadyCallback,
                 newHelpRequest.setVisibility(View.VISIBLE);
                 FABsubmitPost.setVisibility(View.VISIBLE);
 
-                //after submit is pressed make edit text invisible,
-                // also make other fab button invisible
-                // and FAB reappear by setting visible
+                /*after submit is pressed make edit text invisible
+                 also make other fab button invisible
+                 and FAB reappear by setting visible*/
+                newHelpRequest.setVisibility(View.GONE);
+                FABsubmitPost.setVisibility(View.GONE);
+                FABcreateNewPost.setVisibility(View.VISIBLE);
 
             }
         });
