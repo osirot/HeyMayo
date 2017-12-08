@@ -14,7 +14,7 @@
         android:id="@+id/textView4"
         android:layout_width="342dp"
         android:layout_height="200dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="19dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/blue_square_radient"
         android:paddingBottom="15dp"

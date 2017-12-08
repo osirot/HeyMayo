@@ -3,4 +3,27 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="mayoLogo">#08BBDB</color>
+    <color name="white">#ffffff</color>
+
+    <!-- below this line are the colors defined for chatroom users-->
+    <color name="post_creator">#C2C2C2</color>
+    <color name="chat1">#08BBDB</color>
+    <color name="chat2">#FC8FA3</color>
+    <color name="chat3">#9CD72F</color>
+    <color name="chat4">#ED801F</color>
+    <color name="chat5">#B664C4</color>
+    <color name="chat6">#4A4A4A</color>
+    <color name="chat7">#4FB5B2</color>
+    <color name="chat8">#2F96FF</color>
+    <color name="chat9">#E86D5D</color>
+    <color name="chat10">#1DAE73</color>
+    <color name="chat11">#ac664c</color>
+    <color name="chat12">#508fbc</color>
+    <color name="chat13">#bccb4c</color>
+    <color name="chat14">#7c3ec1</color>
+    <color name="chat15">#d36679</color>
+    <color name="chat16">#5ac7cf</color>
+    <color name="chat17">#caa63c</color>
 </resources>

@@ -14,7 +14,7 @@
         android:id="@+id/textView4"
         android:layout_width="342dp"
         android:layout_height="200dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="19dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/purple_square_radient"
@@ -30,5 +30,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/pinIcon"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="147dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_editor_absoluteX="162dp"
+        app:layout_editor_absoluteY="147dp"
+        app:srcCompat="@drawable/iconfatpin"
+        tools:layout_editor_absoluteY="81dp" />
 
 </android.support.constraint.ConstraintLayout>
