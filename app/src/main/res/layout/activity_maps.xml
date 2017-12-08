@@ -24,7 +24,8 @@
         android:layout_marginStart="8dp"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/appicon57x57" />
+        app:srcCompat="@drawable/appicon57x57"
+        app:backgroundTint="@color/mayoLogo"/>
 
     <EditText
         android:id="@+id/new_Post"

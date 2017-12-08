@@ -5,16 +5,18 @@
     android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="4dp"
-    card_view:cardCornerRadius="24dp">
+    android:layout_marginEnd="64dp"
+    card_view:cardCornerRadius="30dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/reply_rectangle"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="@drawable/darkgreen_square_raient">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
