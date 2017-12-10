@@ -51,7 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, GeoQueryEventListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, GeoQueryEventListener, GoogleMap.OnCameraChangeListener {
 
     private GoogleMap mMap;
 
@@ -155,11 +155,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             mMap.setMinZoomPreference(15);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-            this.searchCircle = this.mMap.addCircle(new CircleOptions().center(myLocation).radius(200));
-            this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
-            this.searchCircle.setStrokeColor(Color.argb(66, 0, 0, 0));
+            updateCircle();
 
-            Log.e(TAG, "Value: " + markers);
+
             //For saving current Lat + Long into pref as strings
             SharedPreferences locationPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = locationPrefs.edit();
@@ -186,6 +184,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             showToast("Disconnected. Please re-connect.");
         } else if (i == CAUSE_NETWORK_LOST) {
             showToast("Network lost. Please re-connect.");
+        }
+    }
+
+    public void updateCircle(){
+        if (this.searchCircle != null) {
+            this.searchCircle.remove();
+        }
+        else {
+            this.searchCircle = this.mMap.addCircle(new CircleOptions().center(myLocation).radius(200));
+            this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
+            this.searchCircle.setStrokeColor(Color.argb(66, 0, 0, 0));
+            geoQuery = geoFire.queryAtLocation(new GeoLocation(myLocation.latitude, myLocation.longitude), .2);
         }
     }
 
@@ -316,4 +326,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
+    private double zoomLevelToRadius(double zoomLevel) {
+        // Approximation to fit circle into view
+        return 16384000/Math.pow(2, zoomLevel);
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        // Update the search criteria for this geoQuery and the circle on the map
+        LatLng center = cameraPosition.target;
+        double radius = zoomLevelToRadius(cameraPosition.zoom);
+        this.searchCircle.setCenter(center);
+        this.searchCircle.setRadius(radius);
+        this.geoQuery.setCenter(new GeoLocation(center.latitude, center.longitude));
+        // radius in km
+        this.geoQuery.setRadius(radius/1000);
+    }
 }
+
