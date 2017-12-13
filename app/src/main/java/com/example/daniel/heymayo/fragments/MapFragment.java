@@ -63,7 +63,7 @@ public class MapFragment extends FragmentActivity implements OnMapReadyCallback,
     private static final String GEO_FIRE_REF = GEO_FIRE_DB + "locations";
     private FloatingActionButton FABcreateNewPost;
     private FloatingActionButton FABsubmitPost;
-    public static GeoLocation INITIAL_CENTER = new GeoLocation(47.681437, -122.263981);
+    public static GeoLocation INITIAL_CENTER = new GeoLocation(47.6991, -122.3334);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
